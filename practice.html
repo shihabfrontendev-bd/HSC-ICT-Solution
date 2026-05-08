@@ -1,0 +1,3155 @@
+<script>
+    // গুরুত্বপূর্ণ পরিবর্তন: নিজেকে রিলোড না করে check.html এ পাঠাবে
+    if (localStorage.getItem('hsc_ict_verified') !== 'true') {
+        window.location.href = 'check.html'; 
+    }
+</script>
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSC ICT Solution Practice Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;600&family=Hind+Siliguri:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+
+/* =========================================
+   CSS VARIABLES & RESET
+   ========================================= */
+:root {
+  --bg-deep: #050810;
+  --bg-card: rgba(10,15,35,0.85);
+  --bg-glass: rgba(20,30,60,0.6);
+  --neon-cyan: #00f5ff;
+  --neon-purple: #bf00ff;
+  --neon-green: #00ff88;
+  --neon-pink: #ff0080;
+  --neon-orange: #ff6600;
+  --text-primary: #e8f4ff;
+  --text-muted: #6b8aaa;
+  --border-glass: rgba(0,245,255,0.15);
+  --glow-cyan: 0 0 20px rgba(0,245,255,0.4), 0 0 60px rgba(0,245,255,0.1);
+  --glow-purple: 0 0 20px rgba(191,0,255,0.4);
+  --glow-green: 0 0 20px rgba(0,255,136,0.4);
+  --glow-red: 0 0 20px rgba(255,50,50,0.6), 0 0 40px rgba(255,0,0,0.2);
+  --font-display: 'Orbitron', monospace;
+  --font-code: 'JetBrains Mono', monospace;
+  --font-bangla: 'Hind Siliguri', sans-serif;
+  --sidebar-w: 260px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-bangla);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,100,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(191,0,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,245,255,0.03) 0%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid lines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* =========================================
+   SCROLLBAR
+   ========================================= */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+
+/* =========================================
+   NAVBAR
+   ========================================= */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: rgba(5,8,16,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+  box-shadow: 0 0 30px rgba(0,245,255,0.05);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--bg-deep);
+  box-shadow: var(--glow-cyan);
+  flex-shrink: 0;
+}
+
+.nav-title {
+  font-family: var(--font-display);
+  font-size: clamp(11px, 2vw, 15px);
+  font-weight: 700;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0,245,255,0.5);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.nav-subtitle {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-bangla);
+  display: none;
+}
+
+@media(min-width: 480px) { .nav-subtitle { display: block; } }
+
+.nav-spacer { flex: 1; }
+
+.nav-pills {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.nav-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: var(--font-bangla);
+  cursor: pointer;
+  border: 1px solid var(--border-glass);
+  background: transparent;
+  color: var(--text-muted);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.nav-pill.active, .nav-pill:hover {
+  background: rgba(0,245,255,0.1);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0,245,255,0.2);
+}
+
+.hamburger {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--neon-cyan);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: var(--transition);
+  margin-left: 8px;
+}
+
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--neon-cyan);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.hamburger:hover { box-shadow: var(--glow-cyan); }
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+.sidebar {
+  width: var(--sidebar-w);
+  height: calc(100vh - 60px);
+  position: fixed;
+  left: 0;
+  top: 60px;
+  background: rgba(8,12,28,0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-glass);
+  overflow-y: auto;
+  z-index: 900;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  padding-bottom: 30px;
+}
+
+.sidebar.open { transform: translateX(0); }
+
+@media(min-width: 992px) {
+  .sidebar { transform: translateX(0); }
+  .main-content { margin-left: var(--sidebar-w); }
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 850;
+  backdrop-filter: blur(4px);
+}
+
+.sidebar-overlay.active { display: block; }
+
+.sidebar-section {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0,245,255,0.06);
+}
+
+.sidebar-section-title {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  padding: 0 16px 8px;
+  text-transform: uppercase;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 2px solid transparent;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-bangla);
+}
+
+.sidebar-item:hover {
+  background: rgba(0,245,255,0.05);
+  color: var(--text-primary);
+  border-left-color: rgba(0,245,255,0.3);
+}
+
+.sidebar-item.active {
+  background: rgba(0,245,255,0.08);
+  color: var(--neon-cyan);
+  border-left-color: var(--neon-cyan);
+}
+
+.sidebar-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.04);
+}
+
+.sidebar-item.active .sidebar-icon {
+  background: rgba(0,245,255,0.15);
+  box-shadow: 0 0 10px rgba(0,245,255,0.2);
+}
+
+/* =========================================
+   MAIN CONTENT
+   ========================================= */
+.main-content {
+  flex: 1;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================
+   SECTIONS (pages)
+   ========================================= */
+.page-section {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+  gap: 16px;
+}
+
+.page-section.active { display: flex; }
+
+/* =========================================
+   HERO / DASHBOARD
+   ========================================= */
+.hero-section {
+  padding: 40px 16px 20px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 5vw, 40px);
+  font-weight: 900;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  margin-bottom: 8px;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-family: var(--font-bangla);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0,245,255,0.5);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.quick-start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.quick-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.quick-card:hover::before { opacity: 1; }
+
+.quick-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.quick-card[data-color="cyan"] { --accent: var(--neon-cyan); }
+.quick-card[data-color="purple"] { --accent: var(--neon-purple); }
+.quick-card[data-color="green"] { --accent: var(--neon-green); }
+.quick-card[data-color="pink"] { --accent: var(--neon-pink); }
+
+.quick-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.quick-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.quick-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* =========================================
+   EDITOR LAYOUT
+   ========================================= */
+.editor-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+@media(min-width: 768px) {
+  .editor-layout.split {
+    flex-direction: row;
+  }
+  .editor-layout.split .editor-pane { flex: 1; }
+  .editor-layout.split .output-pane { flex: 1; }
+}
+
+/* =========================================
+   EDITOR PANE
+   ========================================= */
+.editor-pane, .output-pane {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-height: 340px;
+}
+
+.pane-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--border-glass);
+  flex-shrink: 0;
+}
+
+.pane-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.pane-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.pane-dot:nth-child(1) { background: #ff5f57; }
+.pane-dot:nth-child(2) { background: #ffbd2e; }
+.pane-dot:nth-child(3) { background: #28ca41; }
+
+.pane-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: center;
+}
+
+.pane-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid;
+  transition: var(--transition);
+  font-family: var(--font-bangla);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.btn-cyan {
+  background: rgba(0,245,255,0.1);
+  border-color: rgba(0,245,255,0.4);
+  color: var(--neon-cyan);
+}
+.btn-cyan:hover {
+  background: rgba(0,245,255,0.2);
+  box-shadow: var(--glow-cyan);
+}
+
+.btn-purple {
+  background: rgba(191,0,255,0.1);
+  border-color: rgba(191,0,255,0.4);
+  color: var(--neon-purple);
+}
+.btn-purple:hover {
+  background: rgba(191,0,255,0.2);
+  box-shadow: var(--glow-purple);
+}
+
+.btn-green {
+  background: rgba(0,255,136,0.1);
+  border-color: rgba(0,255,136,0.4);
+  color: var(--neon-green);
+}
+.btn-green:hover {
+  background: rgba(0,255,136,0.2);
+  box-shadow: var(--glow-green);
+}
+
+.btn-red {
+  background: rgba(255,50,50,0.1);
+  border-color: rgba(255,50,50,0.4);
+  color: #ff5555;
+}
+.btn-red:hover {
+  background: rgba(255,50,50,0.2);
+}
+
+/* CODE EDITOR */
+.code-editor-wrap {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.line-numbers {
+  padding: 14px 8px;
+  background: rgba(0,0,0,0.2);
+  border-right: 1px solid var(--border-glass);
+  font-family: var(--font-code);
+  font-size: 12px;
+  line-height: 20px;
+  color: rgba(107,138,170,0.5);
+  text-align: right;
+  min-width: 36px;
+  user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.code-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-primary);
+  padding: 14px 14px;
+  resize: none;
+  tab-size: 2;
+  caret-color: var(--neon-cyan);
+  width: 100%;
+}
+
+.code-textarea::selection {
+  background: rgba(0,245,255,0.2);
+}
+
+/* OUTPUT / PREVIEW */
+.output-frame {
+  flex: 1;
+  border: none;
+  background: white;
+  width: 100%;
+}
+
+.c-output {
+  flex: 1;
+  padding: 16px;
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--neon-green);
+  background: #000;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* =========================================
+   ERROR PANEL
+   ========================================= */
+.error-panel {
+  background: rgba(20,5,5,0.9);
+  border: 1px solid rgba(255,50,50,0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: none;
+  animation: errorIn 0.3s ease;
+}
+
+@keyframes errorIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error-panel.active { display: block; box-shadow: var(--glow-red); }
+
+.error-header {
+  padding: 8px 14px;
+  background: rgba(255,50,50,0.1);
+  border-bottom: 1px solid rgba(255,50,50,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #ff5555;
+}
+
+.error-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ff5555;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.error-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.error-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  font-family: var(--font-bangla);
+  color: #ffaaaa;
+  line-height: 1.5;
+}
+
+.error-icon { flex-shrink: 0; font-size: 16px; }
+
+.hint-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12px;
+  font-family: var(--font-bangla);
+  color: #aaffcc;
+  line-height: 1.5;
+}
+
+/* =========================================
+   TEMPLATE CARDS
+   ========================================= */
+.template-section {
+  margin-top: 4px;
+}
+
+.template-section-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.template-card {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.template-card:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(0,245,255,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,245,255,0.1);
+}
+
+.template-card-icon { font-size: 20px; margin-bottom: 6px; }
+
+.template-card-name {
+  font-family: var(--font-code);
+  font-size: 10px;
+  color: var(--neon-cyan);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.template-card-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-bangla);
+}
+
+/* =========================================
+   MINI PROJECTS GRID
+   ========================================= */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.project-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--neon-purple);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4), var(--glow-purple);
+}
+
+.project-card-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+
+.project-card-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.project-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-family: var(--font-bangla);
+}
+
+.project-card-tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-family: var(--font-display);
+  background: rgba(191,0,255,0.15);
+  border: 1px solid rgba(191,0,255,0.3);
+  color: var(--neon-purple);
+}
+
+/* =========================================
+   C PROGRAM SIMULATION PANEL
+   ========================================= */
+.c-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border-glass);
+  background: rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+.c-input-label {
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--neon-green);
+  flex-shrink: 0;
+}
+
+.c-input-field {
+  flex: 1;
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--neon-green);
+  outline: none;
+  transition: var(--transition);
+}
+
+.c-input-field:focus {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 10px rgba(0,255,136,0.2);
+}
+
+.c-run-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  background: rgba(0,255,136,0.15);
+  border: 1px solid rgba(0,255,136,0.4);
+  color: var(--neon-green);
+  font-family: var(--font-bangla);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.c-run-btn:hover {
+  background: rgba(0,255,136,0.25);
+  box-shadow: var(--glow-green);
+}
+
+/* =========================================
+   LEARNING CARDS / TIPS
+   ========================================= */
+.tip-card {
+  background: rgba(0,245,255,0.05);
+  border: 1px solid rgba(0,245,255,0.15);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tip-content { flex: 1; }
+
+.tip-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--neon-cyan);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.tip-text {
+  font-family: var(--font-bangla);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* =========================================
+   TABS (Mobile)
+   ========================================= */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--border-glass);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-glass);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-bangla);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background: rgba(0,245,255,0.1);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0,245,255,0.15);
+}
+
+/* =========================================
+   STICKY RUN BUTTON (Mobile)
+   ========================================= */
+.sticky-run {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 800;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  border: none;
+  box-shadow: 0 4px 20px rgba(0,245,255,0.4), 0 0 40px rgba(0,245,255,0.2);
+  cursor: pointer;
+  font-size: 20px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sticky-run:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(0,245,255,0.6);
+}
+
+@media(min-width: 768px) { .sticky-run { display: none; } }
+
+/* =========================================
+   SECTION HEADER
+   ========================================= */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.section-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.section-title-wrap { flex: 1; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(14px, 3vw, 20px);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.section-title span {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0,245,255,0.4);
+}
+
+.section-desc {
+  font-family: var(--font-bangla);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* =========================================
+   PROGRESS BAR
+   ========================================= */
+.progress-bar-wrap {
+  background: rgba(0,0,0,0.3);
+  border-radius: 10px;
+  height: 6px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  box-shadow: 0 0 8px rgba(0,245,255,0.4);
+  transition: width 1s ease;
+}
+
+/* =========================================
+   TYPING ANIMATION
+   ========================================= */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px; height: 1em;
+  background: var(--neon-cyan);
+  vertical-align: middle;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+/* =========================================
+   FULLSCREEN EDITOR
+   ========================================= */
+.editor-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2000 !important;
+  border-radius: 0 !important;
+  min-height: 100vh !important;
+}
+
+/* =========================================
+   NOTIFICATION TOAST
+   ========================================= */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(10,20,40,0.95);
+  border: 1px solid rgba(0,245,255,0.3);
+  color: var(--text-primary);
+  font-family: var(--font-bangla);
+  font-size: 13px;
+  box-shadow: var(--glow-cyan);
+  animation: toastIn 0.3s ease;
+  max-width: 300px;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* =========================================
+   GLOWING DIVIDER
+   ========================================= */
+.glow-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+  margin: 16px 0;
+  opacity: 0.3;
+}
+
+/* =========================================
+   LOADING SPINNER
+   ========================================= */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(0,245,255,0.2);
+  border-top-color: var(--neon-cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================= */
+@media(max-width: 767px) {
+  .editor-layout.split { flex-direction: column; }
+  .hide-mobile { display: none !important; }
+  .pane-actions .btn { padding: 4px 8px; font-size: 10px; }
+}
+
+@media(min-width: 768px) {
+  .show-mobile-only { display: none !important; }
+}
+
+/* =========================================
+   SCROLLABLE TEMPLATE PICKER
+   ========================================= */
+.template-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.template-scroll::-webkit-scrollbar { height: 3px; }
+
+.tmpl-chip {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border-glass);
+  background: rgba(0,0,0,0.3);
+  font-family: var(--font-code);
+  font-size: 11px;
+  color: var(--neon-cyan);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.tmpl-chip:hover {
+  background: rgba(0,245,255,0.1);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0,245,255,0.15);
+}
+
+/* =========================================
+   BADGE
+   ========================================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+.badge-cyan { background: rgba(0,245,255,0.15); border: 1px solid rgba(0,245,255,0.3); color: var(--neon-cyan); }
+.badge-purple { background: rgba(191,0,255,0.15); border: 1px solid rgba(191,0,255,0.3); color: var(--neon-purple); }
+.badge-green { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.3); color: var(--neon-green); }
+
+/* =========================================
+   ABOUT PAGE
+   ========================================= */
+.about-section {
+  max-width: 700px;
+}
+
+.about-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 16px;
+}
+
+.about-card h3 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--neon-cyan);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.about-card p {
+  font-family: var(--font-bangla);
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* Animated glowing border for featured items */
+@keyframes borderGlow {
+  0%,100% { border-color: rgba(0,245,255,0.2); }
+  50% { border-color: rgba(0,245,255,0.6); box-shadow: var(--glow-cyan); }
+}
+
+.featured { animation: borderGlow 3s ease infinite; }
+
+/* c-output cursor line */
+.c-cursor {
+  display: inline-block;
+  background: var(--neon-green);
+  width: 8px; height: 14px;
+  vertical-align: middle;
+  animation: blink 0.8s infinite;
+  margin-left: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- =========================================
+     NAVBAR
+     ========================================= -->
+<nav class="navbar">
+  <a class="nav-brand" href="#" onclick="showPage('home')">
+    <div class="nav-logo">ICT</div>
+    <div>
+      <div class="nav-title">HSC ICT PRACTICE</div>
+      <div class="nav-subtitle">Devoloped by Rafiatul Shihab</div>
+    </div>
+  </a>
+  <div class="nav-spacer"></div>
+  <div class="nav-pills">
+    <button class="nav-pill active" onclick="showPage('home')">🏠 হোম</button>
+    <button class="nav-pill" onclick="showPage('html-editor')">HTML</button>
+    <button class="nav-pill" onclick="showPage('c-editor')">C</button>
+    <button class="nav-pill hide-mobile" onclick="showPage('projects')">প্রজেক্ট</button>
+  </div>
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- =========================================
+     SIDEBAR
+     ========================================= -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">মূল বিভাগ</div>
+    <div class="sidebar-item active" onclick="showPage('home'); closeSidebar()">
+      <div class="sidebar-icon">🏠</div> ড্যাশবোর্ড
+    </div>
+    <div class="sidebar-item" onclick="showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">🌐</div> HTML এডিটর
+    </div>
+    <div class="sidebar-item" onclick="showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">⚙️</div> C প্রোগ্রামিং
+    </div>
+    <div class="sidebar-item" onclick="showPage('projects'); closeSidebar()">
+      <div class="sidebar-icon">📁</div> মিনি প্রজেক্ট
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">HTML টপিক</div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('heading'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">H</div> হেডিং ট্যাগ
+    </div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('table'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">📊</div> টেবিল
+    </div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('form'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">📝</div> ফর্ম
+    </div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('list'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">📋</div> লিস্ট
+    </div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('multimedia'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">🎵</div> মাল্টিমিডিয়া
+    </div>
+    <div class="sidebar-item" onclick="loadHtmlTemplate('semantic'); showPage('html-editor'); closeSidebar()">
+      <div class="sidebar-icon">🏗️</div> সেমান্টিক ট্যাগ
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">C টপিক</div>
+    <div class="sidebar-item" onclick="loadCTemplate('hello'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">👋</div> Hello World
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('variables'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">📦</div> ভেরিয়েবল
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('if-else'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">🔀</div> If-Else
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('for-loop'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">🔁</div> For Loop
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('while'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">♾️</div> While Loop
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('array'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">🗂️</div> Array
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('function'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">🔧</div> ফাংশন
+    </div>
+    <div class="sidebar-item" onclick="loadCTemplate('switch'); showPage('c-editor'); closeSidebar()">
+      <div class="sidebar-icon">🔄</div> Switch
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">তথ্য</div>
+    <div class="sidebar-item" onclick="showPage('about'); closeSidebar()">
+      <div class="sidebar-icon">ℹ️</div> সম্পর্কে
+    </div>
+  </div>
+</aside>
+
+<!-- =========================================
+     MAIN CONTENT
+     ========================================= -->
+<main class="main-content" id="mainContent">
+
+  <!-- ===== HOME PAGE ===== -->
+  <section class="page-section active" id="page-home">
+    <div class="hero-section">
+      <div class="hero-title">ICT Practice<br>Platform</div>
+      <div class="hero-sub">HSC ICT শিক্ষার্থীদের জন্য বাংলায় HTML ও C প্রোগ্রামিং প্র্যাকটিস করো সরাসরি ব্রাউজারে।</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-templates">30+</div>
+          <div class="stat-label">টেমপ্লেট</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-projects">12+</div>
+          <div class="stat-label">মিনি প্রজেক্ট</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-topics">20+</div>
+          <div class="stat-label">টপিক</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-runs">0</div>
+          <div class="stat-label">কোড রান</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <div style="font-family: var(--font-display); font-size: 10px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 6px;">প্র্যাকটিস প্রগ্রেস</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width: 0%" id="progressFill"></div>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="progressLabel">শুরু করো কোডিং!</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon">🚀</div>
+      <div class="section-title-wrap">
+        <div class="section-title">দ্রুত <span>শুরু করো</span></div>
+      </div>
+    </div>
+
+    <div class="quick-start-grid">
+      <div class="quick-card" data-color="cyan" onclick="showPage('html-editor')">
+        <span class="quick-icon">🌐</span>
+        <div class="quick-title">HTML এডিটর</div>
+        <div class="quick-desc">লাইভ প্রিভিউ সহ HTML কোড লিখো এবং ট্যাগ সম্পর্কে জানো।</div>
+      </div>
+      <div class="quick-card" data-color="purple" onclick="showPage('c-editor')">
+        <span class="quick-icon">⚙️</span>
+        <div class="quick-title">C প্রোগ্রামিং</div>
+        <div class="quick-desc">C কোড লিখো, রান করো এবং বাংলায় এরর বোঝো।</div>
+      </div>
+      <div class="quick-card" data-color="green" onclick="showPage('projects')">
+        <span class="quick-icon">📁</span>
+        <div class="quick-title">মিনি প্রজেক্ট</div>
+        <div class="quick-desc">তৈরি প্রজেক্ট টেমপ্লেট দিয়ে বড় প্রোগ্রাম বানাও।</div>
+      </div>
+      <div class="quick-card" data-color="pink" onclick="showPage('about')">
+        <span class="quick-icon">💡</span>
+        <div class="quick-title">টিপস ও ট্রিকস</div>
+        <div class="quick-desc">কোডিং টিপস, শর্টকাট এবং গুরুত্বপূর্ণ পয়েন্ট।</div>
+      </div>
+    </div>
+
+    <div class="glow-divider"></div>
+
+    <div class="section-header">
+      <div class="section-icon">💡</div>
+      <div class="section-title-wrap">
+        <div class="section-title">শিক্ষার্থীদের <span>টিপস</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="tip-card">
+        <div class="tip-icon">⌨️</div>
+        <div class="tip-content">
+          <div class="tip-title">শর্টকাট ব্যবহার করো</div>
+          <div class="tip-text">Tab চেপে ইন্ডেন্ট করো। Ctrl+A দিয়ে সব সিলেক্ট করো। ভালো কোড ইন্ডেন্টেড হয়।</div>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔍</div>
+        <div class="tip-content">
+          <div class="tip-title">এরর দেখে ভয় পেয়ো না</div>
+          <div class="tip-text">এরর মেসেজ পড়ো এবং বোঝার চেষ্টা করো। প্রতিটি এরর থেকে নতুন কিছু শেখো।</div>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-content">
+          <div class="tip-title">ছোট থেকে শুরু করো</div>
+          <div class="tip-text">প্রথমে ছোট প্রোগ্রাম লিখো, তারপর ধীরে ধীরে বড় করো। প্র্যাকটিসই সাফল্যের চাবিকাঠি।</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HTML EDITOR PAGE ===== -->
+  <section class="page-section" id="page-html-editor">
+
+    <div class="section-header">
+      <div class="section-icon">🌐</div>
+      <div class="section-title-wrap">
+        <div class="section-title"><span>HTML</span> এডিটর</div>
+        <div class="section-desc">কোড লিখো এবং সাথে সাথে লাইভ প্রিভিউ দেখো</div>
+      </div>
+      <span class="badge badge-cyan">LIVE</span>
+    </div>
+
+    <!-- Template Chips -->
+    <div>
+      <div style="font-family: var(--font-display); font-size: 9px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 8px;">টেমপ্লেট বেছে নাও ▾</div>
+      <div class="template-scroll" id="htmlTemplateChips"></div>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+    <div class="tab-bar show-mobile-only">
+      <button class="tab-btn active" onclick="switchHtmlTab('editor')">✏️ এডিটর</button>
+      <button class="tab-btn" onclick="switchHtmlTab('preview')">👁️ প্রিভিউ</button>
+    </div>
+
+    <!-- Editor Layout -->
+    <div class="editor-layout split" id="htmlEditorLayout">
+
+      <!-- Editor Pane -->
+      <div class="editor-pane" id="htmlEditorPane">
+        <div class="pane-header">
+          <div class="pane-dots"><div class="pane-dot"></div><div class="pane-dot"></div><div class="pane-dot"></div></div>
+          <div class="pane-title">index.html</div>
+          <div class="pane-actions">
+            <button class="btn btn-cyan hide-mobile" onclick="runHtml()">▶ রান</button>
+            <button class="btn btn-purple" onclick="resetHtml()">↺ রিসেট</button>
+            <button class="btn btn-green hide-mobile" onclick="downloadHtml()">⬇ ডাউনলোড</button>
+            <button class="btn btn-cyan hide-mobile" onclick="toggleFullscreen('htmlEditorPane')" title="Fullscreen">⛶</button>
+          </div>
+        </div>
+        <div class="code-editor-wrap">
+          <div class="line-numbers" id="htmlLineNumbers">1</div>
+          <textarea class="code-textarea" id="htmlEditor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="HTML কোড লিখো..."></textarea>
+        </div>
+      </div>
+
+      <!-- Preview Pane -->
+      <div class="output-pane" id="htmlPreviewPane">
+        <div class="pane-header">
+          <div class="pane-dots"><div class="pane-dot"></div><div class="pane-dot"></div><div class="pane-dot"></div></div>
+          <div class="pane-title">LIVE PREVIEW</div>
+          <div class="pane-actions">
+            <span id="htmlAutoStatus" style="font-size:10px; color: var(--neon-green); font-family: var(--font-code);">● AUTO</span>
+          </div>
+        </div>
+        <iframe class="output-frame" id="htmlPreview" sandbox="allow-scripts allow-modals"></iframe>
+      </div>
+    </div>
+
+    <!-- HTML Error Panel -->
+    <div class="error-panel" id="htmlErrorPanel">
+      <div class="error-header">
+        <div class="error-pulse"></div> এরর ও সতর্কতা
+      </div>
+      <div class="error-body" id="htmlErrorBody"></div>
+    </div>
+
+    <!-- HTML Tag Reference Grid -->
+    <div class="template-section">
+      <div class="template-section-title">HTML ট্যাগ রেফারেন্স</div>
+      <div class="template-grid" id="htmlTagGrid"></div>
+    </div>
+
+  </section>
+
+  <!-- ===== C EDITOR PAGE ===== -->
+  <section class="page-section" id="page-c-editor">
+
+    <div class="section-header">
+      <div class="section-icon">⚙️</div>
+      <div class="section-title-wrap">
+        <div class="section-title"><span>C</span> প্রোগ্রামিং</div>
+        <div class="section-desc">C কোড লিখো, সিমুলেট করো এবং বাংলায় এরর বোঝো</div>
+      </div>
+      <span class="badge badge-purple">SIMULATE</span>
+    </div>
+
+    <!-- Template Chips -->
+    <div>
+      <div style="font-family: var(--font-display); font-size: 9px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 8px;">টপিক বেছে নাও ▾</div>
+      <div class="template-scroll" id="cTemplateChips"></div>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+    <div class="tab-bar show-mobile-only">
+      <button class="tab-btn active" onclick="switchCTab('editor')">✏️ এডিটর</button>
+      <button class="tab-btn" onclick="switchCTab('output')">💻 আউটপুট</button>
+    </div>
+
+    <!-- Editor Layout -->
+    <div class="editor-layout split" id="cEditorLayout">
+
+      <!-- C Code Pane -->
+      <div class="editor-pane" id="cEditorPane">
+        <div class="pane-header">
+          <div class="pane-dots"><div class="pane-dot"></div><div class="pane-dot"></div><div class="pane-dot"></div></div>
+          <div class="pane-title">program.c</div>
+          <div class="pane-actions">
+            <button class="btn btn-green hide-mobile" onclick="runCProgram()">▶ কম্পাইল ও রান</button>
+            <button class="btn btn-purple" onclick="resetC()">↺ রিসেট</button>
+            <button class="btn btn-cyan hide-mobile" onclick="toggleFullscreen('cEditorPane')">⛶</button>
+          </div>
+        </div>
+        <div class="code-editor-wrap">
+          <div class="line-numbers" id="cLineNumbers">1</div>
+          <textarea class="code-textarea" id="cEditor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="#include &lt;stdio.h&gt;&#10;&#10;int main() {&#10;    // কোড লিখো...&#10;    return 0;&#10;}"></textarea>
+        </div>
+      </div>
+
+      <!-- C Output Pane -->
+      <div class="output-pane" id="cOutputPane">
+        <div class="pane-header">
+          <div class="pane-dots"><div class="pane-dot"></div><div class="pane-dot"></div><div class="pane-dot"></div></div>
+          <div class="pane-title">CONSOLE OUTPUT</div>
+          <div class="pane-actions">
+            <button class="btn btn-red" onclick="clearCOutput()">✕ ক্লিয়ার</button>
+          </div>
+        </div>
+        <div class="c-output" id="cOutput">প্রোগ্রাম রান করো আউটপুট দেখার জন্য...<span class="c-cursor"></span></div>
+        <!-- Input area for interactive C programs -->
+        <div class="c-input-row" id="cInputRow" style="display:none;">
+          <span class="c-input-label">ইনপুট ▶</span>
+          <input class="c-input-field" id="cInputField" placeholder="মান দাও..." />
+          <button class="c-run-btn" onclick="submitCInput()">এন্টার</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C Error Panel -->
+    <div class="error-panel" id="cErrorPanel">
+      <div class="error-header">
+        <div class="error-pulse"></div> কম্পাইল এরর ও সতর্কতা
+      </div>
+      <div class="error-body" id="cErrorBody"></div>
+    </div>
+
+    <!-- C Topic Explanation Cards -->
+    <div class="template-section">
+      <div class="template-section-title">C প্রোগ্রামিং ধারণা</div>
+      <div class="template-grid" id="cConceptGrid"></div>
+    </div>
+
+  </section>
+
+  <!-- ===== PROJECTS PAGE ===== -->
+  <section class="page-section" id="page-projects">
+
+    <div class="section-header">
+      <div class="section-icon">📁</div>
+      <div class="section-title-wrap">
+        <div class="section-title">মিনি <span>প্রজেক্ট</span></div>
+        <div class="section-desc">তৈরি প্রজেক্ট টেমপ্লেট দিয়ে শুরু করো</div>
+      </div>
+    </div>
+
+    <div style="font-family: var(--font-display); font-size: 11px; color: var(--neon-cyan); margin-bottom: 10px; letter-spacing: 1px;">🌐 HTML প্রজেক্ট</div>
+    <div class="project-grid" id="htmlProjectGrid"></div>
+
+    <div class="glow-divider"></div>
+
+    <div style="font-family: var(--font-display); font-size: 11px; color: var(--neon-purple); margin-bottom: 10px; margin-top: 8px; letter-spacing: 1px;">⚙️ C প্রোগ্রামিং প্রজেক্ট</div>
+    <div class="project-grid" id="cProjectGrid"></div>
+
+  </section>
+
+  <!-- ===== ABOUT PAGE ===== -->
+  <section class="page-section" id="page-about">
+
+    <div class="section-header">
+      <div class="section-icon">💡</div>
+      <div class="section-title-wrap">
+        <div class="section-title">টিপস ও <span>তথ্য</span></div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-card featured">
+        <h3>🎯 এই প্ল্যাটফর্ম সম্পর্কে</h3>
+        <p>ICT Practice Platform হল HSC শিক্ষার্থীদের জন্য একটি বিশেষ কোডিং প্র্যাকটিস পরিবেশ। এখানে তোমরা HTML এবং C প্রোগ্রামিং সরাসরি ব্রাউজারে প্র্যাকটিস করতে পারবে। কোনো সফটওয়্যার ইন্সটল করতে হবে না।</p>
+      </div>
+
+      <div class="about-card">
+        <h3>📌 HTML গুরুত্বপূর্ণ পয়েন্ট</h3>
+        <p>• HTML মানে HyperText Markup Language<br>• প্রতিটি ট্যাগের Opening ও Closing থাকে। যেমন: &lt;p&gt;...&lt;/p&gt;<br>• Self-closing tags: &lt;br&gt;, &lt;img&gt;, &lt;input&gt;<br>• Attribute: id, class, src, href, type ইত্যাদি<br>• colspan ও rowspan দিয়ে টেবিল cell merge করা যায়</p>
+      </div>
+
+      <div class="about-card">
+        <h3>📌 C প্রোগ্রামিং গুরুত্বপূর্ণ পয়েন্ট</h3>
+        <p>• প্রতিটি statement এর শেষে semicolon (;) দিতে হয়<br>• scanf() এ variable এর আগে & দিতে হয়<br>• int: পূর্ণসংখ্যা, float: দশমিক, char: অক্ষর<br>• printf() এ \n দিয়ে নতুন লাইনে যাওয়া যায়<br>• for(init; condition; update) — লুপের গঠন</p>
+      </div>
+
+      <div class="about-card">
+        <h3>⌨️ কীবোর্ড শর্টকাট</h3>
+        <p>• Tab — ইন্ডেন্ট করো<br>• Ctrl+A — সব কোড সিলেক্ট<br>• Ctrl+C / Ctrl+V — কপি/পেস্ট<br>• Ctrl+Z — পূর্বাবস্থায় ফিরে যাও<br>• Enter — নতুন লাইন</p>
+      </div>
+
+      <div class="about-card">
+        <h3>🔤 Format Specifier (C)</h3>
+        <p>• %d — int (পূর্ণসংখ্যা)<br>• %f — float (দশমিক)<br>• %c — char (একটি অক্ষর)<br>• %s — string (অক্ষর সারি)<br>• %lf — double<br>• %o — Octal, %x — Hexadecimal</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky Run Button (Mobile) -->
+<button class="sticky-run" id="stickyRun" onclick="mobileRun()" title="রান করো">▶</button>
+
+<script>
+// =========================================
+// STATE
+// =========================================
+let currentPage = 'home';
+let runCount = 0;
+let htmlAutoUpdate = true;
+let htmlDebounce = null;
+let cInputQueue = [];
+let cProgram = null;
+
+// =========================================
+// PAGE NAVIGATION
+// =========================================
+function showPage(page) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+
+  const section = document.getElementById('page-' + page);
+  if (section) section.classList.add('active');
+  currentPage = page;
+
+  // Update sidebar
+  const sidebarItems = document.querySelectorAll('.sidebar-item');
+  const pageMap = { 'home': 0, 'html-editor': 1, 'c-editor': 2, 'projects': 3 };
+  if (pageMap[page] !== undefined) sidebarItems[pageMap[page]]?.classList.add('active');
+
+  // Update nav pills
+  const navPillMap = { 'home': 0, 'html-editor': 1, 'c-editor': 2, 'projects': 3 };
+  const pills = document.querySelectorAll('.nav-pill');
+  if (navPillMap[page] !== undefined) pills[navPillMap[page]]?.classList.add('active');
+
+  // Start animation for homepage
+  if (page === 'home') {
+    animateStats();
+    animateProgress();
+  }
+}
+
+function animateStats() {
+  const el = document.getElementById('stat-runs');
+  if (el) el.textContent = runCount;
+}
+
+function animateProgress() {
+  const pct = Math.min(runCount * 5, 100);
+  const fill = document.getElementById('progressFill');
+  const label = document.getElementById('progressLabel');
+  if (fill) fill.style.width = pct + '%';
+  if (label) {
+    if (runCount === 0) label.textContent = 'শুরু করো কোডিং!';
+    else if (pct < 30) label.textContent = `চমৎকার শুরু! ${pct}% সম্পন্ন`;
+    else if (pct < 70) label.textContent = `দারুণ যাচ্ছে! ${pct}% সম্পন্ন`;
+    else label.textContent = `অসাধারণ! ${pct}% সম্পন্ন 🎉`;
+  }
+}
+
+// =========================================
+// SIDEBAR
+// =========================================
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+// =========================================
+// LINE NUMBERS
+// =========================================
+function updateLineNumbers(textareaId, numbersId) {
+  const ta = document.getElementById(textareaId);
+  const ln = document.getElementById(numbersId);
+  if (!ta || !ln) return;
+  const lines = ta.value.split('\n').length;
+  ln.innerHTML = Array.from({length: lines}, (_, i) => i+1).join('<br>');
+  ln.style.height = ta.scrollHeight + 'px';
+}
+
+// =========================================
+// HTML TEMPLATES
+// =========================================
+const HTML_TEMPLATES = {
+  blank: {
+    label: '📄 Blank', desc: 'খালি',
+    code: `<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>আমার পেজ</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+  </style>
+</head>
+<body>
+  <h1>আমার প্রথম ওয়েবপেজ</h1>
+  <p>এখানে কোড লিখো...</p>
+</body>
+</html>`
+  },
+  heading: {
+    label: 'H হেডিং', desc: 'h1-h6',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>হেডিং ট্যাগ</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+  h1 { color: #e74c3c; }
+  h2 { color: #e67e22; }
+  h3 { color: #f1c40f; }
+  h4 { color: #2ecc71; }
+  h5 { color: #3498db; }
+  h6 { color: #9b59b6; }
+  .box { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+</style></head>
+<body>
+  <div class="box">
+    <h1>এটি h1 ট্যাগ (সবচেয়ে বড়)</h1>
+    <h2>এটি h2 ট্যাগ</h2>
+    <h3>এটি h3 ট্যাগ</h3>
+    <h4>এটি h4 ট্যাগ</h4>
+    <h5>এটি h5 ট্যাগ</h5>
+    <h6>এটি h6 ট্যাগ (সবচেয়ে ছোট)</h6>
+    <p>এটি একটি সাধারণ প্যারাগ্রাফ। &lt;p&gt; ট্যাগ দিয়ে প্যারাগ্রাফ লেখা হয়।</p>
+  </div>
+</body>
+</html>`
+  },
+  table: {
+    label: '📊 টেবিল', desc: 'colspan/rowspan',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>টেবিল উদাহরণ</title>
+<style>
+  body { font-family: Arial; padding: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+  th, td { border: 2px solid #3498db; padding: 10px 15px; text-align: center; }
+  th { background: #3498db; color: white; font-size: 15px; }
+  tr:nth-child(even) { background: #ecf0f1; }
+  caption { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
+</style></head>
+<body>
+  <h2>ক্লাস রুটিন</h2>
+  <table>
+    <caption>সপ্তাহিক ক্লাস রুটিন</caption>
+    <tr>
+      <th>সময়</th>
+      <th>সোমবার</th>
+      <th>মঙ্গলবার</th>
+      <th>বুধবার</th>
+    </tr>
+    <tr>
+      <td>৮:০০-৯:০০</td>
+      <td colspan="2">বাংলা (একসাথে)</td>
+      <td>গণিত</td>
+    </tr>
+    <tr>
+      <td rowspan="2">৯:০০-১১:০০</td>
+      <td>ইংরেজি</td>
+      <td>ICT</td>
+      <td>পদার্থ</td>
+    </tr>
+    <tr>
+      <td>রসায়ন</td>
+      <td>জীববিজ্ঞান</td>
+      <td>ICT</td>
+    </tr>
+  </table>
+
+  <h2>colspan ও rowspan</h2>
+  <table>
+    <tr>
+      <th colspan="3">শিরোনাম (colspan=3)</th>
+    </tr>
+    <tr>
+      <td rowspan="2">A<br>(rowspan=2)</td>
+      <td>B</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>E</td>
+    </tr>
+  </table>
+</body>
+</html>`
+  },
+  form: {
+    label: '📝 ফর্ম', desc: 'input types',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>ভর্তি ফর্ম</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #f0f4f8; }
+  .form-container { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+  h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+  .form-group { margin-bottom: 15px; }
+  label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+  input, select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; box-sizing: border-box; }
+  input:focus, select:focus { border-color: #3498db; outline: none; box-shadow: 0 0 5px rgba(52,152,219,0.3); }
+  .radio-group { display: flex; gap: 20px; }
+  .radio-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; }
+  .radio-group input { width: auto; }
+  button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #2980b9; }
+</style></head>
+<body>
+  <div class="form-container">
+    <h2>🎓 ভর্তি আবেদন ফর্ম</h2>
+    <div class="form-group">
+      <label for="name">পূর্ণ নাম:</label>
+      <input type="text" id="name" placeholder="তোমার নাম লিখো">
+    </div>
+    <div class="form-group">
+      <label for="email">ইমেইল:</label>
+      <input type="email" id="email" placeholder="example@gmail.com">
+    </div>
+    <div class="form-group">
+      <label for="phone">ফোন নম্বর:</label>
+      <input type="tel" id="phone" placeholder="01XXXXXXXXX">
+    </div>
+    <div class="form-group">
+      <label for="dob">জন্ম তারিখ:</label>
+      <input type="date" id="dob">
+    </div>
+    <div class="form-group">
+      <label>লিঙ্গ:</label>
+      <div class="radio-group">
+        <label><input type="radio" name="gender" value="male"> পুরুষ</label>
+        <label><input type="radio" name="gender" value="female"> মহিলা</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="class">শ্রেণি:</label>
+      <select id="class">
+        <option>বেছে নাও</option>
+        <option>একাদশ (XI)</option>
+        <option>দ্বাদশ (XII)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="address">ঠিকানা:</label>
+      <textarea id="address" rows="3" placeholder="তোমার ঠিকানা লিখো"></textarea>
+    </div>
+    <button type="button" onclick="alert('আবেদন জমা দেওয়া হয়েছে!')">✅ জমা দাও</button>
+  </div>
+</body>
+</html>`
+  },
+  list: {
+    label: '📋 লিস্ট', desc: 'ul/ol/dl',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>লিস্ট উদাহরণ</title>
+<style>
+  body { font-family: Arial; padding: 20px; }
+  .section { background: #f8f9fa; padding: 20px; margin: 15px 0; border-left: 4px solid #3498db; border-radius: 0 8px 8px 0; }
+  h3 { color: #2c3e50; }
+  ul { list-style-type: disc; }
+  ol { list-style-type: decimal; }
+  .square { list-style-type: square; }
+  .circle { list-style-type: circle; }
+  .upper-alpha { list-style-type: upper-alpha; }
+  .roman { list-style-type: upper-roman; }
+</style></head>
+<body>
+  <h2>HTML লিস্ট উদাহরণ</h2>
+
+  <div class="section">
+    <h3>Unordered List (ul) — বিন্দু চিহ্ন</h3>
+    <ul>
+      <li>বাংলা</li>
+      <li>ইংরেজি</li>
+      <li>গণিত
+        <ul class="circle">
+          <li>বীজগণিত</li>
+          <li>জ্যামিতি</li>
+        </ul>
+      </li>
+      <li>ICT</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Ordered List (ol) — সংখ্যা চিহ্ন</h3>
+    <ol>
+      <li>প্রথমত পানি ফুটাও</li>
+      <li>চা পাতা দাও</li>
+      <li>চিনি মেশাও</li>
+      <li>পরিবেশন করো</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h3>বিভিন্ন ধরনের অর্ডার</h3>
+    <ol class="upper-alpha"><li>এ</li><li>বি</li><li>সি</li></ol>
+    <ol class="roman"><li>এক</li><li>দুই</li><li>তিন</li></ol>
+  </div>
+
+  <div class="section">
+    <h3>Nested List — ভেতরে লিস্ট</h3>
+    <ul class="square">
+      <li>বিজ্ঞান বিভাগ
+        <ol>
+          <li>পদার্থবিজ্ঞান</li>
+          <li>রসায়ন</li>
+          <li>জীববিজ্ঞান</li>
+        </ol>
+      </li>
+      <li>মানবিক বিভাগ</li>
+      <li>ব্যবসা বিভাগ</li>
+    </ul>
+  </div>
+</body>
+</html>`
+  },
+  anchor: {
+    label: '🔗 লিংক', desc: 'anchor tag',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>Anchor Tag</title>
+<style>
+  body { font-family: Arial; padding: 30px; }
+  a { color: #3498db; text-decoration: underline; }
+  a:hover { color: #e74c3c; }
+  .box { background: #ecf0f1; padding: 15px; border-radius: 8px; margin: 15px 0; }
+  code { background: #34495e; color: #ecf0f1; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+</style></head>
+<body>
+  <h2>🔗 Anchor (&lt;a&gt;) ট্যাগ</h2>
+
+  <div class="box">
+    <h3>বাহ্যিক লিংক (নতুন ট্যাবে খুলবে)</h3>
+    <a href="https://www.google.com" target="_blank">Google এ যাও</a><br><br>
+    <a href="https://www.youtube.com" target="_blank">YouTube দেখো</a>
+  </div>
+
+  <div class="box">
+    <h3>Email লিংক</h3>
+    <a href="mailto:student@school.edu">শিক্ষকের কাছে ইমেইল করো</a>
+  </div>
+
+  <div class="box">
+    <h3>Phone লিংক (মোবাইলে কাজ করে)</h3>
+    <a href="tel:+8801700000000">কল করো: 01700000000</a>
+  </div>
+
+  <div class="box">
+    <h3>পেজের মধ্যে লিংক (Anchor)</h3>
+    <a href="#section1">Section 1 এ যাও</a> |
+    <a href="#section2">Section 2 এ যাও</a>
+
+    <div id="section1" style="margin-top:30px; padding:15px; background:#d5e8d4; border-radius:5px;">
+      <strong>Section 1:</strong> এটি প্রথম অংশ।
+    </div>
+    <div id="section2" style="margin-top:15px; padding:15px; background:#dae8fc; border-radius:5px;">
+      <strong>Section 2:</strong> এটি দ্বিতীয় অংশ।
+    </div>
+  </div>
+</body>
+</html>`
+  },
+  multimedia: {
+    label: '🎵 মিডিয়া', desc: 'audio/video/img',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>মাল্টিমিডিয়া</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #1a1a2e; color: white; }
+  .card { background: #16213e; padding: 20px; border-radius: 10px; margin: 15px 0; border: 1px solid #0f3460; }
+  h3 { color: #e94560; }
+  img { max-width: 100%; border-radius: 8px; display: block; margin: 10px 0; }
+  audio, video { width: 100%; margin: 10px 0; }
+  code { background: #0f3460; padding: 3px 8px; border-radius: 3px; color: #00b4d8; font-size: 12px; }
+</style></head>
+<body>
+  <h2>🎬 মাল্টিমিডিয়া ট্যাগ</h2>
+
+  <div class="card">
+    <h3>📷 Image ট্যাগ</h3>
+    <p>Syntax: <code>&lt;img src="URL" alt="বিকল্প টেক্সট" width="300"&gt;</code></p>
+    <img src="https://picsum.photos/400/200?random=1" alt="একটি সুন্দর ছবি" />
+    <p style="font-size:13px; color:#aaa;">alt attribute: ছবি না দেখালে এই টেক্সট দেখাবে</p>
+  </div>
+
+  <div class="card">
+    <h3>🎵 Audio ট্যাগ</h3>
+    <p>Syntax: <code>&lt;audio src="..." controls&gt;&lt;/audio&gt;</code></p>
+    <audio controls>
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+      তোমার browser audio সাপোর্ট করে না।
+    </audio>
+  </div>
+
+  <div class="card">
+    <h3>🎥 Video ট্যাগ</h3>
+    <p>Syntax: <code>&lt;video src="..." controls width="400"&gt;&lt;/video&gt;</code></p>
+    <video controls width="100%" style="border-radius:8px;">
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      তোমার browser video সাপোর্ট করে না।
+    </video>
+  </div>
+</body>
+</html>`
+  },
+  semantic: {
+    label: '🏗️ সেমান্টিক', desc: 'header/nav/section',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>সেমান্টিক ট্যাগ</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial; margin: 0; background: #f4f4f4; }
+  header { background: #2c3e50; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+  nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; }
+  nav a:hover { color: #3498db; }
+  .container { display: flex; max-width: 900px; margin: 20px auto; gap: 20px; padding: 0 15px; flex-wrap: wrap; }
+  main { flex: 1; min-width: 280px; }
+  aside { width: 220px; min-width: 200px; }
+  article { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+  article h2 { color: #2c3e50; margin-top: 0; }
+  section { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+  section h3 { color: #3498db; margin-top: 0; }
+  footer { background: #2c3e50; color: white; text-align: center; padding: 15px; margin-top: 20px; font-size: 13px; }
+  .tag-label { background: #3498db; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+</style></head>
+<body>
+
+  <header>
+    <div><strong>🏫 মডেল স্কুল</strong> <span class="tag-label">&lt;header&gt;</span></div>
+    <nav>
+      <span class="tag-label">&lt;nav&gt;</span>
+      <a href="#">হোম</a>
+      <a href="#">পাঠ্যক্রম</a>
+      <a href="#">যোগাযোগ</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <main>
+      <span class="tag-label">&lt;main&gt;</span>
+      <article>
+        <span class="tag-label">&lt;article&gt;</span>
+        <h2>📢 স্কুলের নোটিশ</h2>
+        <p>আগামী ১৫ই নভেম্বর বার্ষিক পরীক্ষা শুরু হবে। সকল শিক্ষার্থীদের যথাসময়ে উপস্থিত থাকতে অনুরোধ করা হচ্ছে।</p>
+        <footer><span class="tag-label">&lt;footer&gt; (article এর ভেতরে)</span> তারিখ: ০১/১১/২০২৪</footer>
+      </article>
+      <article>
+        <span class="tag-label">&lt;article&gt;</span>
+        <h2>🏆 পুরস্কার বিজয়ী</h2>
+        <p>এ বছর আমাদের স্কুল বিজ্ঞান অলিম্পিয়াডে প্রথম স্থান অর্জন করেছে।</p>
+      </article>
+    </main>
+
+    <aside>
+      <span class="tag-label">&lt;aside&gt;</span>
+      <section>
+        <span class="tag-label">&lt;section&gt;</span>
+        <h3>📅 আসন্ন অনুষ্ঠান</h3>
+        <ul>
+          <li>১৫ নভে - পরীক্ষা শুরু</li>
+          <li>২০ ডিসে - বার্ষিক ক্রীড়া</li>
+          <li>৫ জানু - পুরস্কার বিতরণ</li>
+        </ul>
+      </section>
+      <section>
+        <h3>📞 যোগাযোগ</h3>
+        <p>ফোন: 01700-000000<br>ইমেইল: school@edu.bd</p>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <span class="tag-label">&lt;footer&gt;</span> © ২০২৪ মডেল স্কুল — সকল অধিকার সংরক্ষিত
+  </footer>
+
+</body>
+</html>`
+  },
+  profile: {
+    label: '👤 প্রোফাইল', desc: 'CV পেজ',
+    code: `<!DOCTYPE html>
+<html>
+<head><title>আমার প্রোফাইল</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 30px 15px; }
+  .card { background: white; max-width: 600px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .card-header { background: linear-gradient(135deg, #2c3e50, #3498db); padding: 40px 30px; text-align: center; color: white; }
+  .avatar { width: 100px; height: 100px; border-radius: 50%; border: 4px solid white; margin: 0 auto 15px; display: block; object-fit: cover; }
+  .name { font-size: 26px; font-weight: bold; margin: 0 0 5px; }
+  .title { opacity: 0.85; font-size: 14px; }
+  .card-body { padding: 30px; }
+  .info-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .info-row:last-child { border: none; }
+  .info-icon { font-size: 20px; width: 30px; text-align: center; }
+  .info-label { font-size: 12px; color: #999; display: block; }
+  .info-value { font-size: 14px; color: #2c3e50; font-weight: 500; }
+  .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .skill-tag { background: #ecf0f1; color: #2c3e50; padding: 5px 12px; border-radius: 15px; font-size: 12px; }
+  h3 { color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; margin-top: 25px; }
+</style></head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <img class="avatar" src="https://picsum.photos/200/200?random=5" alt="Profile Photo">
+      <div class="name">রাহেলা খানম</div>
+      <div class="title">HSC শিক্ষার্থী | বিজ্ঞান বিভাগ</div>
+    </div>
+    <div class="card-body">
+      <div class="info-row">
+        <div class="info-icon">🏫</div>
+        <div><span class="info-label">প্রতিষ্ঠান</span><div class="info-value">ঢাকা কলেজ, ঢাকা</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📚</div>
+        <div><span class="info-label">শ্রেণি</span><div class="info-value">দ্বাদশ (XII) — বিজ্ঞান</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📧</div>
+        <div><span class="info-label">ইমেইল</span><div class="info-value">rahela@gmail.com</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📱</div>
+        <div><span class="info-label">ফোন</span><div class="info-value">01700-000000</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📍</div>
+        <div><span class="info-label">ঠিকানা</span><div class="info-value">মিরপুর, ঢাকা-১২১৬</div></div>
+      </div>
+
+      <h3>🏆 দক্ষতা</h3>
+      <div class="skills">
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">C Programming</span>
+        <span class="skill-tag">MS Office</span>
+        <span class="skill-tag">গণিত</span>
+        <span class="skill-tag">ইংরেজি</span>
+      </div>
+
+      <h3>📊 ফলাফল</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <tr>
+          <th style="background:#3498db; color:white; padding:8px; text-align:left;">পরীক্ষা</th>
+          <th style="background:#3498db; color:white; padding:8px;">জিপিএ</th>
+          <th style="background:#3498db; color:white; padding:8px;">গ্রেড</th>
+        </tr>
+        <tr style="background:#f8f9fa">
+          <td style="padding:8px;">JSC</td>
+          <td style="padding:8px; text-align:center;">5.00</td>
+          <td style="padding:8px; text-align:center;">A+</td>
+        </tr>
+        <tr>
+          <td style="padding:8px;">SSC</td>
+          <td style="padding:8px; text-align:center;">5.00</td>
+          <td style="padding:8px; text-align:center;">A+</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>`
+  }
+};
+
+// HTML Tag Reference items
+const HTML_TAG_ITEMS = [
+  { icon: '📝', tag: '<p>', desc: 'প্যারাগ্রাফ' },
+  { icon: '🔗', tag: '<a>', desc: 'হাইপারলিংক' },
+  { icon: '🖼️', tag: '<img>', desc: 'ছবি' },
+  { icon: '📊', tag: '<table>', desc: 'টেবিল' },
+  { icon: '📋', tag: '<ul>/<ol>', desc: 'লিস্ট' },
+  { icon: '📝', tag: '<form>', desc: 'ফর্ম' },
+  { icon: '🔲', tag: '<div>', desc: 'বিভাগ' },
+  { icon: '⬛', tag: '<span>', desc: 'ইনলাইন' },
+  { icon: '⬛', tag: '<input>', desc: 'ইনপুট' },
+  { icon: '🎵', tag: '<audio>', desc: 'অডিও' },
+  { icon: '🎥', tag: '<video>', desc: 'ভিডিও' },
+  { icon: '🏗️', tag: '<header>', desc: 'হেডার' },
+  { icon: '🗂️', tag: '<nav>', desc: 'নেভিগেশন' },
+  { icon: '📰', tag: '<article>', desc: 'আর্টিকেল' },
+  { icon: '📌', tag: '<aside>', desc: 'সাইডবার' },
+  { icon: '🦶', tag: '<footer>', desc: 'ফুটার' },
+  { icon: '🔡', tag: '<b>/<strong>', desc: 'বোল্ড' },
+  { icon: '📐', tag: '<br>', desc: 'লাইন বিরতি' },
+];
+
+// =========================================
+// C TEMPLATES
+// =========================================
+const C_TEMPLATES = {
+  hello: {
+    label: '👋 Hello World', desc: 'প্রথম প্রোগ্রাম',
+    code: `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\\n");
+    printf("ICT Practice Platform এ স্বাগতম!\\n");
+    printf("আমার নাম C প্রোগ্রামিং।\\n");
+    return 0;
+}`,
+    inputs: [],
+    simulate: (inputs) => [
+      'Hello, World!',
+      'ICT Practice Platform এ স্বাগতম!',
+      'আমার নাম C প্রোগ্রামিং।'
+    ]
+  },
+  variables: {
+    label: '📦 ভেরিয়েবল', desc: 'data types',
+    code: `#include <stdio.h>
+
+int main() {
+    // ভেরিয়েবল ডিক্লেয়ারেশন
+    int age = 17;
+    float gpa = 4.75;
+    char grade = 'A';
+    
+    printf("বয়স: %d বছর\\n", age);
+    printf("GPA: %.2f\\n", gpa);
+    printf("গ্রেড: %c\\n", grade);
+    printf("পূর্ণ নম্বর: %d\\n", age + 3);
+    
+    return 0;
+}`,
+    inputs: [],
+    simulate: () => [
+      'বয়স: 17 বছর',
+      'GPA: 4.75',
+      'গ্রেড: A',
+      'পূর্ণ নম্বর: 20'
+    ]
+  },
+  'if-else': {
+    label: '🔀 If-Else', desc: 'শর্তমূলক',
+    code: `#include <stdio.h>
+
+int main() {
+    int marks;
+    printf("নম্বর দাও (0-100): ");
+    scanf("%d", &marks);
+    
+    if (marks >= 80) {
+        printf("গ্রেড: A+\\n");
+        printf("ফলাফল: চমৎকার!\\n");
+    } else if (marks >= 70) {
+        printf("গ্রেড: A\\n");
+        printf("ফলাফল: খুব ভালো!\\n");
+    } else if (marks >= 60) {
+        printf("গ্রেড: A-\\n");
+        printf("ফলাফল: ভালো।\\n");
+    } else if (marks >= 50) {
+        printf("গ্রেড: B\\n");
+        printf("ফলাফল: গড়।\\n");
+    } else if (marks >= 33) {
+        printf("গ্রেড: C\\n");
+        printf("ফলাফল: পাস।\\n");
+    } else {
+        printf("গ্রেড: F\\n");
+        printf("ফলাফল: ফেল। আরও পড়ো!\\n");
+    }
+    
+    return 0;
+}`,
+    inputs: ['marks'],
+    simulate: (inputs) => {
+      const m = parseInt(inputs[0]) || 0;
+      if (m >= 80) return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: A+', 'ফলাফল: চমৎকার!'];
+      if (m >= 70) return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: A', 'ফলাফল: খুব ভালো!'];
+      if (m >= 60) return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: A-', 'ফলাফল: ভালো।'];
+      if (m >= 50) return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: B', 'ফলাফল: গড়।'];
+      if (m >= 33) return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: C', 'ফলাফল: পাস।'];
+      return [`নম্বর দাও (0-100): ${m}`, 'গ্রেড: F', 'ফলাফল: ফেল। আরও পড়ো!'];
+    }
+  },
+  'for-loop': {
+    label: '🔁 For Loop', desc: 'পুনরাবৃত্তি',
+    code: `#include <stdio.h>
+
+int main() {
+    int n;
+    printf("কতটি সংখ্যার যোগ করবো? ");
+    scanf("%d", &n);
+    
+    int sum = 0;
+    printf("\\n1 থেকে %d পর্যন্ত:\\n", n);
+    
+    for (int i = 1; i <= n; i++) {
+        printf("%d ", i);
+        sum += i;
+    }
+    
+    printf("\\n\\nমোট যোগফল = %d\\n", sum);
+    printf("গড় = %.2f\\n", (float)sum / n);
+    
+    return 0;
+}`,
+    inputs: ['n'],
+    simulate: (inputs) => {
+      const n = parseInt(inputs[0]) || 5;
+      let nums = [];
+      let sum = 0;
+      for (let i = 1; i <= n; i++) { nums.push(i); sum += i; }
+      return [
+        `কতটি সংখ্যার যোগ করবো? ${n}`,
+        ``,
+        `1 থেকে ${n} পর্যন্ত:`,
+        nums.join(' '),
+        ``,
+        `মোট যোগফল = ${sum}`,
+        `গড় = ${(sum/n).toFixed(2)}`
+      ];
+    }
+  },
+  while: {
+    label: '♾️ While Loop', desc: 'while/do-while',
+    code: `#include <stdio.h>
+
+int main() {
+    int n, factorial = 1, i = 1;
+    printf("ফ্যাক্টোরিয়াল বের করো: ");
+    scanf("%d", &n);
+    
+    while (i <= n) {
+        factorial *= i;
+        i++;
+    }
+    
+    printf("%d! = %d\\n", n, factorial);
+    
+    // do-while উদাহরণ
+    printf("\\n--- do-while: 1 থেকে 5 ---\\n");
+    int j = 1;
+    do {
+        printf("সংখ্যা: %d\\n", j);
+        j++;
+    } while (j <= 5);
+    
+    return 0;
+}`,
+    inputs: ['n'],
+    simulate: (inputs) => {
+      const n = parseInt(inputs[0]) || 5;
+      let fact = 1;
+      for (let i = 1; i <= n; i++) fact *= i;
+      const lines = [
+        `ফ্যাক্টোরিয়াল বের করো: ${n}`,
+        `${n}! = ${fact}`,
+        ``,
+        `--- do-while: 1 থেকে 5 ---`
+      ];
+      for (let j = 1; j <= 5; j++) lines.push(`সংখ্যা: ${j}`);
+      return lines;
+    }
+  },
+  array: {
+    label: '🗂️ Array', desc: 'এরে',
+    code: `#include <stdio.h>
+
+int main() {
+    int arr[5];
+    int sum = 0, max, min;
+    
+    printf("৫টি সংখ্যা দাও:\\n");
+    for (int i = 0; i < 5; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+        sum += arr[i];
+    }
+    
+    max = min = arr[0];
+    for (int i = 1; i < 5; i++) {
+        if (arr[i] > max) max = arr[i];
+        if (arr[i] < min) min = arr[i];
+    }
+    
+    printf("\\nএরে: ");
+    for (int i = 0; i < 5; i++) printf("%d ", arr[i]);
+    printf("\\nযোগফল: %d\\n", sum);
+    printf("গড়: %.2f\\n", (float)sum / 5);
+    printf("সর্বোচ্চ: %d\\n", max);
+    printf("সর্বনিম্ন: %d\\n", min);
+    
+    return 0;
+}`,
+    inputs: ['num1', 'num2', 'num3', 'num4', 'num5'],
+    simulate: (inputs) => {
+      const arr = inputs.slice(0, 5).map(v => parseInt(v) || Math.floor(Math.random()*50+1));
+      while (arr.length < 5) arr.push(Math.floor(Math.random()*50+1));
+      const sum = arr.reduce((a,b)=>a+b,0);
+      const max = Math.max(...arr);
+      const min = Math.min(...arr);
+      const lines = ['৫টি সংখ্যা দাও:'];
+      arr.forEach((v,i) => lines.push(`arr[${i}] = ${v}`));
+      lines.push('', `এরে: ${arr.join(' ')}`, `যোগফল: ${sum}`, `গড়: ${(sum/5).toFixed(2)}`, `সর্বোচ্চ: ${max}`, `সর্বনিম্ন: ${min}`);
+      return lines;
+    }
+  },
+  'function': {
+    label: '🔧 ফাংশন', desc: 'user function',
+    code: `#include <stdio.h>
+
+// ফাংশন ডিক্লেয়ারেশন (prototype)
+int add(int a, int b);
+int multiply(int a, int b);
+void printLine();
+
+int main() {
+    int x = 10, y = 5;
+    
+    printf("x = %d, y = %d\\n", x, y);
+    printLine();
+    printf("যোগফল: %d\\n", add(x, y));
+    printf("গুণফল: %d\\n", multiply(x, y));
+    printLine();
+    
+    return 0;
+}
+
+// ফাংশন সংজ্ঞা
+int add(int a, int b) {
+    return a + b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+void printLine() {
+    printf("----------------------\\n");
+}`,
+    inputs: [],
+    simulate: () => [
+      'x = 10, y = 5',
+      '----------------------',
+      'যোগফল: 15',
+      'গুণফল: 50',
+      '----------------------'
+    ]
+  },
+  switch: {
+    label: '🔄 Switch', desc: 'switch-case',
+    code: `#include <stdio.h>
+
+int main() {
+    int choice;
+    printf("ক্যালকুলেটর\\n");
+    printf("1. যোগ\\n");
+    printf("2. বিয়োগ\\n");
+    printf("3. গুণ\\n");
+    printf("4. ভাগ\\n");
+    printf("অপশন বেছে নাও: ");
+    scanf("%d", &choice);
+    
+    int a = 20, b = 4;
+    printf("a=%d, b=%d\\n", a, b);
+    
+    switch(choice) {
+        case 1:
+            printf("যোগফল = %d\\n", a + b);
+            break;
+        case 2:
+            printf("বিয়োগফল = %d\\n", a - b);
+            break;
+        case 3:
+            printf("গুণফল = %d\\n", a * b);
+            break;
+        case 4:
+            if (b != 0)
+                printf("ভাগফল = %d\\n", a / b);
+            else
+                printf("ভুল! শূন্য দিয়ে ভাগ হয় না।\\n");
+            break;
+        default:
+            printf("ভুল অপশন!\\n");
+    }
+    
+    return 0;
+}`,
+    inputs: ['choice'],
+    simulate: (inputs) => {
+      const c = parseInt(inputs[0]) || 1;
+      const a = 20, b = 4;
+      const opts = {
+        1: `যোগফল = ${a+b}`,
+        2: `বিয়োগফল = ${a-b}`,
+        3: `গুণফল = ${a*b}`,
+        4: `ভাগফল = ${a/b}`
+      };
+      return [
+        'ক্যালকুলেটর',
+        '1. যোগ', '2. বিয়োগ', '3. গুণ', '4. ভাগ',
+        `অপশন বেছে নাও: ${c}`,
+        `a=${a}, b=${b}`,
+        opts[c] || 'ভুল অপশন!'
+      ];
+    }
+  }
+};
+
+// C Concept Grid
+const C_CONCEPTS = [
+  { icon: '📤', tag: 'printf()', desc: 'আউটপুট দেয়' },
+  { icon: '📥', tag: 'scanf()', desc: 'ইনপুট নেয়' },
+  { icon: '📦', tag: 'int/float', desc: 'ভেরিয়েবল' },
+  { icon: '🔀', tag: 'if-else', desc: 'শর্ত' },
+  { icon: '🔁', tag: 'for loop', desc: 'গণনা লুপ' },
+  { icon: '♾️', tag: 'while', desc: 'শর্ত লুপ' },
+  { icon: '🗂️', tag: 'array[]', desc: 'এরে' },
+  { icon: '🔧', tag: 'function', desc: 'ফাংশন' },
+  { icon: '🔄', tag: 'switch', desc: 'বহু শর্ত' },
+  { icon: '→', tag: 'goto', desc: 'লাফ দাও' },
+  { icon: '🔣', tag: '%d %f %c', desc: 'ফরম্যাট' },
+  { icon: '📐', tag: '&', desc: 'scanf এ লাগে' },
+];
+
+// HTML Projects
+const HTML_PROJECTS = [
+  { icon: '👤', title: 'ব্যক্তিগত পোর্টফোলিও', desc: 'CV ও পোর্টফোলিও পেজ তৈরি করো', key: 'profile' },
+  { icon: '📊', title: 'ক্লাস রুটিন', desc: 'সাপ্তাহিক রুটিন টেবিল', key: 'table' },
+  { icon: '📝', title: 'ভর্তি ফর্ম', desc: 'স্কুল ভর্তির আবেদন ফর্ম', key: 'form' },
+  { icon: '🏫', title: 'স্কুল ওয়েবসাইট', desc: 'স্কুলের হোম পেজ', key: 'semantic' },
+  { icon: '📋', title: 'নোটিশ বোর্ড', desc: 'স্কুলের নোটিশ পেজ', key: 'semantic' },
+  { icon: '🔗', title: 'লিংক ও মিডিয়া', desc: 'anchor, audio, video ট্যাগ', key: 'multimedia' },
+];
+
+// C Projects
+const C_PROJECTS = [
+  { icon: '🧮', title: 'ক্যালকুলেটর', desc: 'switch দিয়ে চার অপারেশন', key: 'switch' },
+  { icon: '🎯', title: 'জোড়-বিজোড়', desc: 'if-else দিয়ে পরীক্ষা করো', key: 'if-else' },
+  { icon: '📊', title: 'গুণের ছক', desc: 'for loop দিয়ে multiplication table', key: 'for-loop' },
+  { icon: '🎓', title: 'GPA ক্যালকুলেটর', desc: 'গড় ও গ্রেড নির্ণয়', key: 'if-else' },
+  { icon: '🏦', title: 'সিম্পল ব্যাংক', desc: 'জমা, উত্তোলন, ব্যালেন্স', key: 'switch' },
+  { icon: '🗂️', title: 'সর্বোচ্চ-সর্বনিম্ন', desc: 'array দিয়ে সংখ্যা বিশ্লেষণ', key: 'array' },
+];
+
+// =========================================
+// C ERROR DETECTION
+// =========================================
+const C_ERROR_RULES = [
+  {
+    test: code => !/\bint\s+main\s*\(/.test(code),
+    error: '❌ main() ফাংশন পাওয়া যাচ্ছে না। C প্রোগ্রামে int main() থাকা বাধ্যতামূলক।',
+    hint: '💡 প্রোগ্রামের শুরুতে int main() { ... return 0; } যোগ করো।'
+  },
+  {
+    test: code => !/\s*#include\s*<stdio.h>/.test(code),
+    error: '❌ #include <stdio.h> দেখা যাচ্ছে না। printf/scanf ব্যবহার করতে এটি লাগবে।',
+    hint: '💡 কোডের সবার উপরে #include <stdio.h> যোগ করো।'
+  },
+  {
+    test: code => {
+      // প্রতিটি লাইন আলাদা করে চেক করো
+      const lines = code.split('\n');
+      return lines.some(line => {
+        const trimmed = line.trim();
+        // printf আছে এমন লাইন যেগুলো ; দিয়ে শেষ হয়নি
+        return /printf\s*\(/.test(trimmed) 
+          && !trimmed.endsWith(';')
+          && !trimmed.endsWith('{')
+          && trimmed !== '';
+      });
+    },
+    error: '❌ তুমি printf লাইনের শেষে semicolon (;) দিতে ভুলে গেছো।',
+    hint: '💡 প্রতিটি statement এর শেষে ; দিতে হয়। যেমন: printf("Hello");'
+  },
+  {
+    test: code => {
+      const lines = code.split('\n');
+      return lines.some(line => {
+        const trimmed = line.trim();
+        // scanf আছে কিন্তু & নেই এমন লাইন
+        return /scanf\s*\(/.test(trimmed) && !/&/.test(trimmed);
+      });
+    },
+    error: '❌ scanf এ variable এর আগে & (ampersand) ব্যবহার করতে হয়।',
+    hint: '💡 সঠিক উদাহরণ: scanf("%d", &num);'
+  },
+  {
+    test: code => {
+      const opens = (code.match(/\{/g) || []).length;
+      const closes = (code.match(/\}/g) || []).length;
+      return opens !== closes;
+    },
+    error: '❌ তুমি curly bracket { } সঠিকভাবে বন্ধ করোনি।',
+    hint: '💡 প্রতিটি { এর জন্য একটি } থাকা দরকার। ইন্ডেন্ট করলে সহজ হয়।'
+  },
+  {
+    test: code => {
+      const opens = (code.match(/\(/g) || []).length;
+      const closes = (code.match(/\)/g) || []).length;
+      return opens !== closes;
+    },
+    error: '❌ তুমি প্যারেন্থেসিস ( ) সঠিকভাবে বন্ধ করোনি।',
+    hint: '💡 প্রতিটি ( এর জন্য একটি ) থাকা দরকার।'
+  },
+  {
+    test: code => /while\s*\(\s*1\s*\)/.test(code) && !/break/.test(code),
+    error: '⚠️ সতর্কতা: while(1) ব্যবহার করেছো কিন্তু break নেই — অসীম লুপ হতে পারে!',
+    hint: '💡 while(1) লুপ থেকে বের হতে break statement ব্যবহার করো।'
+  }
+];
+
+// =========================================
+// RENDER GRIDS
+// =========================================
+function renderHtmlTagGrid() {
+  const grid = document.getElementById('htmlTagGrid');
+  if (!grid) return;
+  grid.innerHTML = HTML_TAG_ITEMS.map(item => `
+    <div class="template-card" onclick="insertHtmlSnippet('${item.tag}')">
+      <div class="template-card-icon">${item.icon}</div>
+      <span class="template-card-name">${item.tag}</span>
+      <div class="template-card-desc">${item.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderCConceptGrid() {
+  const grid = document.getElementById('cConceptGrid');
+  if (!grid) return;
+  grid.innerHTML = C_CONCEPTS.map(item => `
+    <div class="template-card" onclick="insertCSnippet('${item.tag}')">
+      <div class="template-card-icon">${item.icon}</div>
+      <span class="template-card-name">${item.tag}</span>
+      <div class="template-card-desc">${item.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderHtmlChips() {
+  const container = document.getElementById('htmlTemplateChips');
+  if (!container) return;
+  Object.keys(HTML_TEMPLATES).forEach(key => {
+    const t = HTML_TEMPLATES[key];
+    const chip = document.createElement('button');
+    chip.className = 'tmpl-chip';
+    chip.textContent = t.label;
+    chip.onclick = () => loadHtmlTemplate(key);
+    container.appendChild(chip);
+  });
+}
+
+function renderCChips() {
+  const container = document.getElementById('cTemplateChips');
+  if (!container) return;
+  Object.keys(C_TEMPLATES).forEach(key => {
+    const t = C_TEMPLATES[key];
+    const chip = document.createElement('button');
+    chip.className = 'tmpl-chip';
+    chip.textContent = t.label;
+    chip.onclick = () => loadCTemplate(key);
+    container.appendChild(chip);
+  });
+}
+
+function renderProjectGrids() {
+  const hg = document.getElementById('htmlProjectGrid');
+  if (hg) {
+    hg.innerHTML = HTML_PROJECTS.map(p => `
+      <div class="project-card" onclick="loadHtmlTemplate('${p.key}'); showPage('html-editor')">
+        <span class="project-card-icon">${p.icon}</span>
+        <div class="project-card-title">${p.title}</div>
+        <div class="project-card-desc">${p.desc}</div>
+        <span class="project-card-tag">HTML</span>
+      </div>
+    `).join('');
+  }
+  const cg = document.getElementById('cProjectGrid');
+  if (cg) {
+    cg.innerHTML = C_PROJECTS.map(p => `
+      <div class="project-card" onclick="loadCTemplate('${p.key}'); showPage('c-editor')">
+        <span class="project-card-icon">${p.icon}</span>
+        <div class="project-card-title">${p.title}</div>
+        <div class="project-card-desc">${p.desc}</div>
+        <span class="project-card-tag" style="background:rgba(191,0,255,0.15); border-color:rgba(191,0,255,0.3); color:var(--neon-purple);">C Lang</span>
+      </div>
+    `).join('');
+  }
+}
+
+// =========================================
+// HTML EDITOR
+// =========================================
+function loadHtmlTemplate(key) {
+  const t = HTML_TEMPLATES[key];
+  if (!t) return;
+  const ta = document.getElementById('htmlEditor');
+  ta.value = t.code;
+  updateLineNumbers('htmlEditor', 'htmlLineNumbers');
+  runHtml();
+  showToast(`টেমপ্লেট লোড হয়েছে: ${t.label}`);
+}
+
+function runHtml() {
+  const code = document.getElementById('htmlEditor').value;
+  const iframe = document.getElementById('htmlPreview');
+  iframe.srcdoc = code;
+  runCount++;
+  checkHtmlErrors(code);
+}
+
+function checkHtmlErrors(code) {
+  const panel = document.getElementById('htmlErrorPanel');
+  const body = document.getElementById('htmlErrorBody');
+  const errors = [];
+
+  // Basic HTML checks
+  if (!/<html/i.test(code)) errors.push({ type: 'error', msg: '❌ <html> ট্যাগ নেই। সঠিক HTML ডকুমেন্টে <html> থাকা উচিত।' });
+  if (!/<body/i.test(code)) errors.push({ type: 'error', msg: '❌ <body> ট্যাগ নেই। সব content <body> এর ভেতরে থাকে।' });
+  if (!/<head/i.test(code)) errors.push({ type: 'warn', msg: '⚠️ <head> ট্যাগ নেই। title ও style এখানে থাকে।' });
+  if (!/<title/i.test(code)) errors.push({ type: 'warn', msg: '⚠️ <title> ট্যাগ দাও — ট্যাব এ পেজের নাম দেখাবে।' });
+
+  if (errors.length === 0) {
+    panel.classList.remove('active');
+    return;
+  }
+
+  body.innerHTML = errors.map(e => `
+    <div class="${e.type === 'error' ? 'error-item' : 'hint-item'}">
+      <span class="error-icon">${e.type === 'error' ? '⛔' : '⚠️'}</span>
+      <span>${e.msg}</span>
+    </div>
+  `).join('');
+  panel.classList.add('active');
+}
+
+function resetHtml() {
+  document.getElementById('htmlEditor').value = HTML_TEMPLATES.blank.code;
+  updateLineNumbers('htmlEditor', 'htmlLineNumbers');
+  runHtml();
+  document.getElementById('htmlErrorPanel').classList.remove('active');
+}
+
+function downloadHtml() {
+  const code = document.getElementById('htmlEditor').value;
+  const blob = new Blob([code], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mypage.html';
+  a.click();
+  showToast('ফাইল ডাউনলোড হচ্ছে...');
+}
+
+function insertHtmlSnippet(tag) {
+  const ta = document.getElementById('htmlEditor');
+  const clean = tag.replace(/[<>]/g, '');
+  const selfClosing = ['br', 'img', 'input', 'hr', 'meta', 'link'];
+  let snippet = selfClosing.includes(clean.split(' ')[0]) ? `<${clean}>` : `<${clean}></${clean}>`;
+  insertAtCursor(ta, snippet);
+  updateLineNumbers('htmlEditor', 'htmlLineNumbers');
+  runHtml();
+}
+
+function switchHtmlTab(tab) {
+  const editorPane = document.getElementById('htmlEditorPane');
+  const previewPane = document.getElementById('htmlPreviewPane');
+  document.querySelectorAll('#page-html-editor .tab-btn').forEach(b => b.classList.remove('active'));
+
+  if (tab === 'editor') {
+    editorPane.style.display = 'flex';
+    previewPane.style.display = 'none';
+    document.querySelectorAll('#page-html-editor .tab-btn')[0].classList.add('active');
+  } else {
+    editorPane.style.display = 'none';
+    previewPane.style.display = 'flex';
+    runHtml();
+    document.querySelectorAll('#page-html-editor .tab-btn')[1].classList.add('active');
+  }
+}
+
+// =========================================
+// C EDITOR
+// =========================================
+let cCurrentTemplate = null;
+let cInputStep = 0;
+let cInputValues = [];
+
+function loadCTemplate(key) {
+  const t = C_TEMPLATES[key];
+  if (!t) return;
+  cCurrentTemplate = key;
+  document.getElementById('cEditor').value = t.code;
+  updateLineNumbers('cEditor', 'cLineNumbers');
+  clearCOutput();
+  document.getElementById('cErrorPanel').classList.remove('active');
+  showToast(`টেমপ্লেট লোড হয়েছে: ${t.label}`);
+}
+
+function runCProgram() {
+  const code = document.getElementById('cEditor').value.trim();
+  if (!code) { showToast('কোড লিখো আগে!'); return; }
+
+  const errors = detectCErrors(code);
+  if (errors.length > 0) {
+    showCErrors(errors);
+    return;
+  }
+
+  document.getElementById('cErrorPanel').classList.remove('active');
+  runCount++;
+
+  // Check if template needs inputs
+  const key = cCurrentTemplate || detectTemplateKey(code);
+  const tmpl = C_TEMPLATES[key];
+
+  if (tmpl && tmpl.inputs && tmpl.inputs.length > 0) {
+    // Interactive: ask inputs
+    cInputStep = 0;
+    cInputValues = [];
+    startCInput(tmpl, code);
+  } else if (tmpl) {
+    // No inputs needed
+    displayCOutput(tmpl.simulate([]).join('\n'));
+  } else {
+    // Generic simulation
+    simulateGenericC(code);
+  }
+}
+
+function detectTemplateKey(code) {
+  for (const key in C_TEMPLATES) {
+    const t = C_TEMPLATES[key];
+    const firstLine = t.code.split('\n').slice(3,5).join('\n');
+    if (code.includes(firstLine.trim().substring(0, 30))) return key;
+  }
+  return null;
+}
+
+function startCInput(tmpl, code) {
+  const outputEl = document.getElementById('cOutput');
+  const inputRow = document.getElementById('cInputRow');
+  outputEl.textContent = '● প্রোগ্রাম চলছে...\n\nইনপুট প্রয়োজন:\n';
+  inputRow.style.display = 'flex';
+  document.getElementById('cInputField').focus();
+  document.getElementById('cInputField').placeholder = tmpl.inputs[0] ? `${tmpl.inputs[0]} এর মান দাও` : 'মান দাও';
+}
+
+function submitCInput() {
+  const field = document.getElementById('cInputField');
+  const val = field.value.trim();
+  if (!val) return;
+  cInputValues.push(val);
+  field.value = '';
+
+  const key = cCurrentTemplate || 'hello';
+  const tmpl = C_TEMPLATES[key];
+
+  if (!tmpl) return;
+
+  if (cInputValues.length >= (tmpl.inputs.length || 0)) {
+    // All inputs collected
+    document.getElementById('cInputRow').style.display = 'none';
+    const result = tmpl.simulate(cInputValues);
+    displayCOutput(result.join('\n'));
+  } else {
+    const next = tmpl.inputs[cInputValues.length];
+    document.getElementById('cInputField').placeholder = next ? `${next} এর মান দাও` : 'পরবর্তী মান দাও';
+    document.getElementById('cOutput').textContent += `${val}\n`;
+  }
+}
+
+function simulateGenericC(code) {
+  // Try to extract printf strings and simulate
+  const lines = [];
+  const printfMatches = code.match(/printf\s*\(\s*"([^"]+)"/g) || [];
+  printfMatches.forEach(m => {
+    let str = m.match(/"([^"]+)"/)[1];
+    str = str.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+    // Replace basic format specifiers with placeholder
+    str = str.replace(/%d/g, '42').replace(/%f/g, '3.14').replace(/%c/g, 'A').replace(/%s/g, 'text').replace(/%.2f/g, '3.14');
+    lines.push(str);
+  });
+
+  if (lines.length > 0) {
+    displayCOutput(lines.join(''));
+  } else {
+    displayCOutput('প্রোগ্রাম সম্পন্ন (কোনো আউটপুট নেই)');
+  }
+}
+
+function detectCErrors(code) {
+  const errors = [];
+  C_ERROR_RULES.forEach(rule => {
+    if (rule.test(code)) {
+      errors.push({ error: rule.error, hint: rule.hint });
+    }
+  });
+  return errors;
+}
+
+function showCErrors(errors) {
+  const panel = document.getElementById('cErrorPanel');
+  const body = document.getElementById('cErrorBody');
+  body.innerHTML = errors.map(e => `
+    <div class="error-item">
+      <span class="error-icon">⛔</span>
+      <span>${e.error}</span>
+    </div>
+    ${e.hint ? `<div class="hint-item"><span class="error-icon">💡</span><span>${e.hint}</span></div>` : ''}
+  `).join('');
+  panel.classList.add('active');
+}
+
+function displayCOutput(text) {
+  const el = document.getElementById('cOutput');
+  el.innerHTML = '';
+
+  // Typewriter effect
+  let i = 0;
+  const chars = text.split('');
+  function typeNext() {
+    if (i < chars.length) {
+      el.innerHTML = text.substring(0, i+1).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '<span class="c-cursor"></span>';
+      i++;
+      // Faster for longer text
+      const delay = chars.length > 200 ? 5 : 20;
+      setTimeout(typeNext, delay);
+    }
+  }
+  typeNext();
+}
+
+function clearCOutput() {
+  document.getElementById('cOutput').innerHTML = 'প্রোগ্রাম রান করো আউটপুট দেখার জন্য...<span class="c-cursor"></span>';
+  document.getElementById('cInputRow').style.display = 'none';
+  cInputValues = [];
+}
+
+function resetC() {
+  const ta = document.getElementById('cEditor');
+  ta.value = `#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}`;
+  updateLineNumbers('cEditor', 'cLineNumbers');
+  clearCOutput();
+  document.getElementById('cErrorPanel').classList.remove('active');
+  cCurrentTemplate = null;
+}
+
+function insertCSnippet(concept) {
+  const snippets = {
+    'printf()': 'printf("আউটপুট: %d\\n", value);',
+    'scanf()': 'scanf("%d", &variable);',
+    'int/float': 'int num = 0;\nfloat decimal = 0.0;\nchar ch = \'A\';',
+    'if-else': 'if (condition) {\n    // সত্য হলে\n} else {\n    // মিথ্যা হলে\n}',
+    'for loop': 'for (int i = 0; i < n; i++) {\n    printf("%d\\n", i);\n}',
+    'while': 'while (condition) {\n    // কাজ\n    // condition পরিবর্তন করো\n}',
+    'array[]': 'int arr[5] = {1, 2, 3, 4, 5};\nfor (int i = 0; i < 5; i++) {\n    printf("%d\\n", arr[i]);\n}',
+    'function': 'int myFunction(int a, int b) {\n    return a + b;\n}',
+    'switch': 'switch(choice) {\n    case 1:\n        // কাজ\n        break;\n    default:\n        printf("অজানা অপশন\\n");\n}',
+    '→': 'goto label;\n// ...\nlabel:',
+    '%d %f %c': '// int: %d, float: %f, char: %c, string: %s',
+    '&': 'scanf("%d", &variable); // & দিতে ভুলো না!'
+  };
+  const ta = document.getElementById('cEditor');
+  insertAtCursor(ta, '\n' + (snippets[concept] || concept) + '\n');
+  updateLineNumbers('cEditor', 'cLineNumbers');
+}
+
+function switchCTab(tab) {
+  const editorPane = document.getElementById('cEditorPane');
+  const outputPane = document.getElementById('cOutputPane');
+  document.querySelectorAll('#page-c-editor .tab-btn').forEach(b => b.classList.remove('active'));
+
+  if (tab === 'editor') {
+    editorPane.style.display = 'flex';
+    outputPane.style.display = 'none';
+    document.querySelectorAll('#page-c-editor .tab-btn')[0].classList.add('active');
+  } else {
+    editorPane.style.display = 'none';
+    outputPane.style.display = 'flex';
+    document.querySelectorAll('#page-c-editor .tab-btn')[1].classList.add('active');
+  }
+}
+
+// =========================================
+// UTILITY
+// =========================================
+function insertAtCursor(el, text) {
+  const start = el.selectionStart;
+  const end = el.selectionEnd;
+  el.value = el.value.substring(0, start) + text + el.value.substring(end);
+  el.selectionStart = el.selectionEnd = start + text.length;
+  el.focus();
+}
+
+function toggleFullscreen(paneId) {
+  const pane = document.getElementById(paneId);
+  pane.classList.toggle('editor-fullscreen');
+}
+
+function mobileRun() {
+  if (currentPage === 'html-editor') runHtml();
+  else if (currentPage === 'c-editor') runCProgram();
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+// =========================================
+// KEYBOARD SHORTCUTS
+// =========================================
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    mobileRun();
+  }
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.editor-fullscreen').forEach(el => el.classList.remove('editor-fullscreen'));
+    closeSidebar();
+  }
+});
+
+// Tab key in textarea
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab' && e.target.classList.contains('code-textarea')) {
+    e.preventDefault();
+    insertAtCursor(e.target, '  ');
+    const id = e.target.id === 'htmlEditor' ? 'htmlLineNumbers' : 'cLineNumbers';
+    updateLineNumbers(e.target.id, id);
+  }
+});
+
+// Enter key in C input
+document.getElementById('cInputField')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitCInput();
+});
+
+// =========================================
+// AUTO EVENTS
+// =========================================
+// HTML auto-update
+document.getElementById('htmlEditor')?.addEventListener('input', () => {
+  updateLineNumbers('htmlEditor', 'htmlLineNumbers');
+  clearTimeout(htmlDebounce);
+  htmlDebounce = setTimeout(runHtml, 600);
+});
+
+document.getElementById('htmlEditor')?.addEventListener('scroll', () => {
+  const ln = document.getElementById('htmlLineNumbers');
+  const ta = document.getElementById('htmlEditor');
+  if (ln) ln.scrollTop = ta.scrollTop;
+});
+
+document.getElementById('cEditor')?.addEventListener('input', () => {
+  updateLineNumbers('cEditor', 'cLineNumbers');
+});
+
+// =========================================
+// INIT
+// =========================================
+function init() {
+  // Render all grids
+  renderHtmlTagGrid();
+  renderCConceptGrid();
+  renderHtmlChips();
+  renderCChips();
+  renderProjectGrids();
+
+  // Load default HTML template
+  const ta = document.getElementById('htmlEditor');
+  if (ta) {
+    ta.value = HTML_TEMPLATES.blank.code;
+    updateLineNumbers('htmlEditor', 'htmlLineNumbers');
+    setTimeout(runHtml, 100);
+  }
+
+  // Load default C template
+  const cta = document.getElementById('cEditor');
+  if (cta) {
+    cta.value = C_TEMPLATES.hello.code;
+    updateLineNumbers('cEditor', 'cLineNumbers');
+    cCurrentTemplate = 'hello';
+  }
+
+  // Animate stats
+  animateStats();
+}
+
+// Start
+window.addEventListener('load', init);
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>

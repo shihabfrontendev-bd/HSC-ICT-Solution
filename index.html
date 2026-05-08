@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSC ICT Solution — Smart ICT Learning Platform</title>
+  <meta name="description" content="HSC ICT শেখার সবচেয়ে আধুনিক platform। Number System, C Programming, Logic Gate সহ সব ICT topic সহজ ভাষায়।">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="practice.css">
+</head>
+<body>
+
+<!-- ============================================================
+     SCROLL PROGRESS BAR
+     ============================================================ -->
+<div id="scroll-progress"></div>
+
+<!-- ============================================================
+     LOADING SCREEN
+     ============================================================ -->
+<div id="loading-screen">
+  <div class="loader-ring"></div>
+  <div class="loader-text">HSC ICT SOLUTION</div>
+</div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="navbar">
+  <!-- Logo -->
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="HSC ICT Solution Logo">
+    <div>
+      <span class="nav-logo-text">HSC ICT Solution</span>
+      <span class="nav-logo-sub">Smart Learning Platform</span>
+    </div>
+  </a>
+
+  <!-- Desktop Nav Links -->
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="practice.html">Practice</a></li>
+    <li><a href="notes.html">Notes</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><span class="nav-phone">📞 01757118796</span></li>
+  </ul>
+
+  <!-- Hamburger (Mobile) -->
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Nav Drawer -->
+<div class="mobile-nav" id="mobile-nav">
+  <a href="index.html">🏠 Home</a>
+  <a href="practice.html">💻 Practice</a>
+  <a href="notes.html">📚 Notes</a>
+  <a href="contact.html">📞 Contact</a>
+  <a href="tel:01757118796" style="color:var(--neon-cyan)">📱 01757118796</a>
+</div>
+
+<!-- ============================================================
+     FLOATING WHATSAPP BUTTON
+     ============================================================ -->
+<a href="https://wa.me/8801757118796" target="_blank" class="whatsapp-float" title="WhatsApp এ যোগাযোগ করো">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- Back to Top -->
+<button id="back-to-top" title="উপরে যাও">▲</button>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section id="hero">
+  <!-- Matrix rain canvas -->
+  <canvas id="matrix-canvas"></canvas>
+  <!-- Animated overlay -->
+  <div class="hero-overlay"></div>
+  <!-- Circuit grid -->
+  <div class="circuit-lines"></div>
+  <!-- Floating particles -->
+  <div class="particles-container"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">🚀 HSC ICT | SMART LEARNING PLATFORM</div>
+
+    <h1 class="hero-headline">
+      ICT কে <span class="highlight">সহজ, মজার</span> আর<br>
+      Practical ভাবে শেখানো হয়
+    </h1>
+
+    <p class="hero-sub">HSC ICT | Smart Learning Platform</p>
+
+    <div class="typing-container">
+      <span id="typing-text"></span><span class="typing-cursor">|</span>
+    </div>
+
+    <div class="hero-buttons">
+      <a href="#admission" class="btn btn-primary">
+        🎓 ভর্তি হও
+      </a>
+      <a href="practice.html" class="btn btn-outline">
+        💻 Practice Now
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-dot"></div>
+    Scroll করো
+  </div>
+</section>
+
+<!-- ============================================================
+     ICT FUN SECTION
+     ============================================================ -->
+<section id="ict-fun">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">ICT MAGIC</span>
+      <h2 class="section-title">ICT এর <span>মজার জগত</span></h2>
+      <p class="section-subtitle">এগুলো দেখে ভুল মনে হচ্ছে? আসলে এগুলোই ICT এর সত্যিকারের উত্তর!</p>
+    </div>
+
+    <div class="fun-grid">
+      <!-- Card 1: Binary addition -->
+      <div class="glass-card fun-card reveal">
+        <span class="math-expr">1 + 1 =</span>
+        <span class="math-result">10</span>
+      </div>
+      <!-- Card 2: Boolean OR -->
+      <div class="glass-card fun-card reveal">
+        <span class="math-expr">1 + 1 =</span>
+        <span class="math-result">1</span>
+      </div>
+      <!-- Card 3: Boolean AND -->
+      <div class="glass-card fun-card reveal">
+        <span class="math-expr">1+1+1 =</span>
+        <span class="math-result">1</span>
+      </div>
+      <!-- Card 4: Octal addition -->
+      <div class="glass-card fun-card reveal">
+        <span class="math-expr">9 + 7 =</span>
+        <span class="math-result">10</span>
+      </div>
+    </div>
+
+    <div class="fun-caption reveal">
+      😄 কি ভুল ভাবছো? ভুল না, এগুলো সবই ICT এর মজা!<br>
+      <small style="color:var(--text-muted)">Binary | Boolean | Hexadecimal — সব শিখবে এখানে</small>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INSTRUCTOR SECTION
+     ============================================================ -->
+<section id="instructor">
+  <div class="container">
+    <div class="instructor-grid">
+      <!-- Image -->
+      <div class="instructor-img-wrap reveal-left">
+        <!-- Replace teacher.jpg with real photo -->
+        <div class="instructor-img-placeholder"><img src="Asset 2.png" alt=""></div>
+        <div class="instructor-badge">⭐ 7+ Years Experience</div>
+      </div>
+
+      <!-- Info -->
+      <div class="reveal-right">
+        <span class="section-tag">YOUR INSTRUCTOR</span>
+        <h2 class="instructor-name">ICT Expert</h2>
+        <p class="instructor-title">HSC ICT Specialist | Smart Teaching Method</p>
+
+        <ul class="instructor-features">
+          <li>
+            <span class="icon">🧠</span>
+            Concept-based smart teaching method — মুখস্থ না, বোঝা
+          </li>
+          <li>
+            <span class="icon">👥</span>
+            ছোট ব্যাচে পড়ানো হয় — প্রতিটি student কে আলাদা attention
+          </li>
+          <li>
+            <span class="icon">📝</span>
+            Weekly exam — নিয়মিত পরীক্ষায় নিজেকে যাচাই করো
+          </li>
+          <li>
+            <span class="icon">💻</span>
+            Practical ICT — শুধু theory না, হাতে কলমে শেখা
+          </li>
+          <li>
+            <span class="icon">📱</span>
+            Online support — যেকোনো সমস্যায় সাহায্য পাবে
+          </li>
+        </ul>
+
+        <!-- Stats row -->
+        <div class="stats-row">
+          <div class="stat-item glass-card">
+            <span class="stat-num" data-target="500" data-suffix="+">0</span>
+            <div class="stat-label">Students</div>
+          </div>
+          <div class="stat-item glass-card">
+            <span class="stat-num" data-target="7" data-suffix="+">0</span>
+            <div class="stat-label">Years Exp.</div>
+          </div>
+          <div class="stat-item glass-card">
+            <span class="stat-num" data-target="50" data-suffix="+">0</span>
+            <div class="stat-label">Smart Notes</div>
+          </div>
+          <div class="stat-item glass-card">
+            <span class="stat-num" data-target="24" data-suffix="/7">0</span>
+            <div class="stat-label">Support</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ICT TOPICS SECTION
+     ============================================================ -->
+<section id="topics">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">CURRICULUM</span>
+      <h2 class="section-title">ICT <span>Topics</span></h2>
+      <p class="section-subtitle">HSC ICT এর সব গুরুত্বপূর্ণ Chapter এখানে শেখানো হয়</p>
+    </div>
+
+    <div class="topics-grid">
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">🔢</span>
+        <div class="topic-name">Number System</div>
+        <div class="topic-desc">Binary, Octal, Decimal, Hexadecimal</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">⚙️</span>
+        <div class="topic-name">Boolean Algebra</div>
+        <div class="topic-desc">Logic operations, Truth table, Simplification</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">🔌</span>
+        <div class="topic-name">Logic Gate</div>
+        <div class="topic-desc">AND, OR, NOT, NAND, NOR, XOR, XNOR</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">📊</span>
+        <div class="topic-name">Flowchart</div>
+        <div class="topic-desc">Algorithm, Problem solving, Symbols</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">💻</span>
+        <div class="topic-name">C Programming</div>
+        <div class="topic-desc">Variables, Loop, Array, Function</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">🌐</span>
+        <div class="topic-name">HTML</div>
+        <div class="topic-desc">Web Design, Tags, Forms, Tables</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">🗄️</span>
+        <div class="topic-name">Database</div>
+        <div class="topic-desc">SQL, Normalization, ER Diagram</div>
+      </div>
+      <div class="glass-card topic-card reveal">
+        <span class="topic-icon">🌍</span>
+        <div class="topic-name">Networking</div>
+        <div class="topic-desc">Topology, Protocol, OSI Model</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHY CHOOSE US
+     ============================================================ -->
+<section id="why-us">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">WHY US</span>
+      <h2 class="section-title">কেন <span>HSC ICT Solution?</span></h2>
+      <p class="section-subtitle">আমরা সাধারণ coachingএর মতো না। আমরা different।</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">📝</div>
+        <div class="feature-title">CQ + MCQ Practice</div>
+        <div class="feature-desc">প্রতিটি Chapter এর CQ এবং MCQ আলাদাভাবে practice করানো হয়। Board exam এর মতো question pattern।</div>
+      </div>
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">📅</div>
+        <div class="feature-title">Weekly Exams</div>
+        <div class="feature-desc">প্রতি সপ্তাহে exam হয়। নিজের অগ্রগতি নিজেই বুঝতে পারবে। Leaderboard এও নিজের নাম দেখবে।</div>
+      </div>
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">📄</div>
+        <div class="feature-title">PDF Notes</div>
+        <div class="feature-desc">সুন্দর, সহজ ভাষায় লেখা PDF notes। যেকোনো সময় download করে পড়তে পারবে।</div>
+      </div>
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">⌨️</div>
+        <div class="feature-title">Practical Coding</div>
+        <div class="feature-desc">C Programming এবং HTML শুধু কাগজে না, হাতে কলমে লিখে শেখা। Online editor এ সরাসরি practice।</div>
+      </div>
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">🧠</div>
+        <div class="feature-title">Concept Based Learning</div>
+        <div class="feature-desc">মুখস্থ না, বোঝাপড়া। কেন এটা হয়, কীভাবে কাজ করে — সেটা শেখানো হয়।</div>
+      </div>
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon-wrap">💬</div>
+        <div class="feature-title">Online Support</div>
+        <div class="feature-desc">WhatsApp এবং Messenger এ যেকোনো সমস্যার সমাধান পাবে। কেউ একা থাকবে না।</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BATCH SECTION
+     ============================================================ -->
+<section id="batch">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">BATCHES</span>
+      <h2 class="section-title">আমাদের <span>Batch সমূহ</span></h2>
+      <p class="section-subtitle">তোমার সুবিধামতো সময়ের Batch বেছে নাও</p>
+    </div>
+
+    <div class="batch-grid">
+      <!-- Batch 1 -->
+      <div class="glass-card batch-card reveal popular">
+        <div class="batch-name">Batch A — Morning</div>
+        <div class="batch-info">
+          <div class="batch-info-row">
+            <span class="batch-info-label">⏰ সময়</span>
+            <span class="batch-info-val">সকাল ৮টা — ১০টা</span>
+          </div>
+          <div class="batch-info-row">
+            <span class="batch-info-label">📅 দিন</span>
+            <span class="batch-info-val">শনি, সোম, বুধ</span>
+          </div>
+          <div class="batch-info-row">
+            <span class="batch-info-label">📚 ধরন</span>
+            <span class="batch-info-val">Offline + Online</span>
+          </div>
+        </div>
+        <div class="seat-counter">
+          <span class="progress-label">Seat</span>
+          <div class="seat-bar"><div class="seat-fill" data-pct="85"></div></div>
+          <span class="seat-text">5 বাকি</span>
+        </div>
+        <a href="#admission" class="btn btn-primary" style="margin-top:20px;width:100%;justify-content:center">ভর্তি হও</a>
+      </div>
+
+      <!-- Batch 2 -->
+      <div class="glass-card batch-card reveal">
+        <div class="batch-name">Batch B — Evening</div>
+        <div class="batch-info">
+          <div class="batch-info-row">
+            <span class="batch-info-label">⏰ সময়</span>
+            <span class="batch-info-val">বিকাল ৪টা — ৬টা</span>
+          </div>
+          <div class="batch-info-row">
+            <span class="batch-info-label">📅 দিন</span>
+            <span class="batch-info-val">রবি, মঙ্গল, বৃহ</span>
+          </div>
+          <div class="batch-info-row">
+            <span class="batch-info-label">📚 ধরন</span>
+            <span class="batch-info-val">Offline</span>
+          </div>
+        </div>
+        <div class="seat-counter">
+          <span class="progress-label">Seat</span>
+          <div class="seat-bar"><div class="seat-fill" data-pct="90"></div></div>
+          <span class="seat-text">4 বাকি</span>
+        </div>
+        <a href="#admission" class="btn btn-outline" style="margin-top:20px;width:100%;justify-content:center">ভর্তি হও</a>
+      </div>
+       <!-- Batch 3 -->
+    <div class="glass-card batch-card reveal">
+      <div class="batch-name">Batch C — Online</div>
+      <div class="batch-info">
+        <div class="batch-info-row">
+          <span class="batch-info-label">⏰ সময়</span>
+          <span class="batch-info-val">রাত ৮টা — ১০টা</span>
+        </div>
+        <div class="batch-info-row">
+          <span class="batch-info-label">📅 দিন</span>
+          <span class="batch-info-val">শুক্র, শনি</span>
+        </div>
+        <div class="batch-info-row">
+          <span class="batch-info-label">📚 ধরন</span>
+          <span class="batch-info-val">সম্পূর্ণ Online</span>
+        </div>
+      </div>
+      <div class="seat-counter">
+        <span class="progress-label">Seat</span>
+        <div class="seat-bar"><div class="seat-fill" data-pct="85"></div></div>
+        <span class="seat-text">2 বাকি</span>
+      </div>
+      <a href="#admission" class="btn btn-outline" style="margin-top:20px;width:100%;justify-content:center">ভর্তি হও</a>
+    </div>
+    <!-- individual -->
+    <div class="glass-card batch-card reveal">
+      <div class="batch-name">Batch D - individual </div>
+      <div class="batch-info">
+        <div class="batch-info-row">
+          <span class="batch-info-label">⏰ সময়</span>
+          <span class="batch-info-val">Anytime</span>
+        </div>
+        <div class="batch-info-row">
+          <span class="batch-info-label">📅 দিন</span>
+          <span class="batch-info-val">যেকোনো দিন</span>
+        </div>
+        <div class="batch-info-row">
+          <span class="batch-info-label">📚 ধরন</span>
+          <span class="batch-info-val">সম্পূর্ণ Online/ Offline </span>
+        </div>
+      </div>
+      <div class="seat-counter">
+        <span class="progress-label">Seat</span>
+        <div class="seat-bar"><div class="seat-fill" data-pct="50"></div></div>
+        <span class="seat-text">1 বাকি</span>
+      </div>
+      <a href="#admission" class="btn btn-outline" style="margin-top:20px;width:100%;justify-content:center">ভর্তি হও</a>
+    </div>
+    </div>
+   
+  </div>
+</section>
+
+<!-- ============================================================
+     ADMISSION FORM
+     ============================================================ -->
+<section id="admission">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">ADMISSION</span>
+      <h2 class="section-title">আজই <span>ভর্তি হও</span></h2>
+      <p class="section-subtitle">নিচের form টি পূরণ করো। আমরা দ্রুত যোগাযোগ করবো।</p>
+    </div>
+
+    <div class="glass-card form-wrapper reveal">
+      <!-- Admission Form -->
+      <form id="admission-form">
+        <div class="form-group">
+          <label for="f-name">তোমার নাম *</label>
+          <input type="text" id="f-name" name="name" placeholder="পূর্ণ নাম লেখো" required>
+          <div class="form-error" id="err-name">নাম অবশ্যই দিতে হবে (কমপক্ষে ২ অক্ষর)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-college">College / School *</label>
+          <input type="text" name="college" id="f-college" placeholder="তোমার College এর নাম">
+          <div class="form-error" id="err-college">College এর নাম দাও</div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-phone">Phone Number *</label>
+          <input type="tel" name="phone" id="f-phone" placeholder="01XXXXXXXXX">
+          <div class="form-error" id="err-phone">সঠিক বাংলাদেশি নম্বর দাও (11 digits)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-batch">Batch বেছে নাও *</label>
+          <select id="f-batch" name="batch" required>
+            <option value="">-- Batch Select করো --</option>
+            <option value="morning">Batch A — Morning </option>
+            <option value="evening">Batch B — Evening </option>
+            <option value="online">Batch C — Online </option>
+            <option value="Individual">Batch D — individual </option>
+          </select>
+          <div class="form-error" id="err-batch">Batch select করো</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;font-size:17px;padding:16px">
+          🎓 ভর্তির আবেদন করো
+        </button>
+      </form>
+
+      <!-- Success message -->
+      <div class="form-success" id="form-success">
+        <div style="font-size:48px;margin-bottom:16px">🎉</div>
+        <h3>আবেদন সফল হয়েছে!</h3>
+        <p style="color:var(--text-muted);margin-top:8px">আমরা শীঘ্রই তোমার সাথে যোগাযোগ করবো। WhatsApp: 01757118796</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">REVIEWS</span>
+      <h2 class="section-title">Student দের <span>কথা</span></h2>
+    </div>
+
+    <div class="testimonials-slider reveal">
+      <div class="testimonials-track">
+
+        <div class="glass-card testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"এখানে পড়ার আগে ICT আমার কাছে খুব কঠিন ছিল। Binary conversion, Logic gate — কিছুই বুঝতাম না। কিন্তু এখন সব crystal clear। এতটা সহজভাবে কেউ আমাকে কখনো শেখায়নি।"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">রা</div>
+            <div>
+              <div class="testimonial-name">রাহেলা খানম</div>
+              <div class="testimonial-batch">Batch A — 2024</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"C Programming practice page টা অসাধারণ! নিজেই code লিখে output দেখতে পারি। Board exam এ এই topic থেকে সব প্রশ্ন কমন পড়েছিল। A+ পেয়েছি, thanks HSC ICT Solution!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">তা</div>
+            <div>
+              <div class="testimonial-name">তানভীর আহমেদ</div>
+              <div class="testimonial-batch">Batch B — 2024</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"PDF notes গুলো এত সুন্দর যে পড়তে ইচ্ছে করে। Weekly exam এর কারণে নিজেকে সবসময় prepared রাখতে হয়। এটা আমাকে discipline করেছে। ICT তে আমার number সব subject থেকে বেশি।"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">সা</div>
+            <div>
+              <div class="testimonial-name">সাদিয়া ইসলাম</div>
+              <div class="testimonial-batch">Batch C — Online</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"আমি গ্রামে থাকি, তাই Online batch নিয়েছিলাম। মনে হচ্ছিল না যে offline থেকে কম পাচ্ছি। WhatsApp এ যেকোনো প্রশ্ন করলে সঙ্গে সঙ্গে উত্তর পাই। Highly recommended!"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">মো</div>
+            <div>
+              <div class="testimonial-name">মো. রিফাত হোসেন</div>
+              <div class="testimonial-batch">Batch C — 2023</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="slider-controls">
+        <button class="slider-btn" id="prev-slide">◀</button>
+        <button class="slider-btn" id="next-slide">▶</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COUNTER SECTION
+     ============================================================ -->
+<section id="counters">
+  <div class="container">
+    <div class="counters-grid">
+      <div class="counter-item reveal">
+        <span class="counter-num" data-target="500" data-suffix="+">0</span>
+        <div class="counter-label">Happy Students</div>
+      </div>
+      <div class="counter-item reveal">
+        <span class="counter-num" data-target="95" data-suffix="%">0</span>
+        <div class="counter-label">Success Rate</div>
+      </div>
+      <div class="counter-item reveal">
+        <span class="counter-num" data-target="200" data-suffix="+">0</span>
+        <div class="counter-label">Weekly Exams</div>
+      </div>
+      <div class="counter-item reveal">
+        <span class="counter-num" data-target="7" data-suffix="+">0</span>
+        <div class="counter-label">Years Experience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DEMO VIDEO SECTION
+     ============================================================ -->
+<section id="demo-videos">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">FREE LESSONS</span>
+      <h2 class="section-title">Demo <span>Class</span> দেখো</h2>
+      <p class="section-subtitle">ভর্তির আগে আমাদের teaching style দেখে নাও বিনামূল্যে</p>
+    </div>
+
+    <div class="videos-grid">
+      <!-- Video 1: Replace VIDEO_ID_1 with real YouTube video ID -->
+      <div class="glass-card video-card reveal">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                  title="Number System Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Number System — Binary থেকে শুরু</div>
+          <div class="video-meta">📅 Class 01 | ⏱ 45 min</div>
+        </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="glass-card video-card reveal">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  title="C Programming Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <div class="video-title">C Programming — প্রথম Program লেখা</div>
+          <div class="video-meta">📅 Class 05 | ⏱ 52 min</div>
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="glass-card video-card reveal">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  title="Logic Gate Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <div class="video-title">Logic Gate — সহজ ভাষায়</div>
+          <div class="video-meta">📅 Class 03 | ⏱ 38 min</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ SECTION
+     ============================================================ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">FAQ</span>
+      <h2 class="section-title">সাধারণ <span>প্রশ্নোত্তর</span></h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          ভর্তির জন্য কি আগে থেকে ICT জানতে হবে?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+          না! একদম Beginner থেকে শুরু করা যায়। আমরা এমনভাবে পড়াই যাতে যে ICT এর কিছুই জানে না, সেও সহজে বুঝতে পারে। শুধু শেখার ইচ্ছে থাকলেই হবে।
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          Online batch কি Offline এর মতোই ভালো?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+          হ্যাঁ! Online batch এ live class হয়, সরাসরি প্রশ্ন করা যায়, class recording পাওয়া যায়, এবং WhatsApp এ সার্বক্ষণিক support পাওয়া যায়। গ্রামে বা দূরে থাকলেও সমান সুবিধা পাবে।
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          Practice page কি সত্যিকারের C program চালাতে পারে?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+          আমাদের Practice page এ একটি smart simulator আছে যা সাধারণ C programs এর output দেখাতে পারে। এটা board exam এর জন্য যথেষ্ট practice করার সুযোগ দেয়। Complex program এর জন্য আলাদা compiler ব্যবহার করা হয়।
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          Course fee কত এবং কীভাবে payment করতে হবে?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+          Fee সম্পর্কে জানতে সরাসরি WhatsApp করো: 01757118796। আমরা bKash, Nagad এবং সরাসরি cash payment গ্রহণ করি। Batch ভেদে fee আলাদা হতে পারে।
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          Board exam এর জন্য কতটা কার্যকর?
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+          আমাদের 95% student ICT তে A এবং A+ পেয়েছে। আমরা board এর question pattern ধরে পড়াই, CQ এবং MCQ আলাদাভাবে practice করাই, এবং mock test নিই। Board exam এর জন্য সম্পূর্ণ প্রস্তুত করা আমাদের লক্ষ্য।
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="display:inline-flex;margin-bottom:16px">
+          <img src="logo.png" alt="HSC ICT Solution Logo">
+          <span class="nav-logo-text">HSC ICT Solution</span>
+        </a>
+        <p>ICT কে সহজ, মজার আর Practical ভাবে শেখানো হয়। HSC students দের জন্য বাংলাদেশের সেরা ICT platform।</p>
+        <div style="margin-top:20px;display:flex;gap:12px">
+          <a href="https://wa.me/8801757118796" target="_blank" style="text-decoration:none;font-size:24px" title="WhatsApp">💬</a>
+          <a href="https://facebook.com" target="_blank" style="text-decoration:none;font-size:24px" title="Facebook">📘</a>
+          <a href="https://youtube.com" target="_blank" style="text-decoration:none;font-size:24px" title="YouTube">▶️</a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <div class="footer-heading">QUICK LINKS</div>
+        <ul class="footer-links">
+          <li><a href="index.html">🏠 Home</a></li>
+          <li><a href="practice.html">💻 Practice</a></li>
+          <li><a href="notes.html">📚 Notes</a></li>
+          <li><a href="contact.html">📞 Contact</a></li>
+          <li><a href="#admission">🎓 ভর্তি হও</a></li>
+        </ul>
+      </div>
+
+      <!-- Topics -->
+      <div>
+        <div class="footer-heading">ICT TOPICS</div>
+        <ul class="footer-links">
+          <li><a href="#">🔢 Number System</a></li>
+          <li><a href="#">⚙️ Boolean Algebra</a></li>
+          <li><a href="#">🔌 Logic Gate</a></li>
+          <li><a href="#">💻 C Programming</a></li>
+          <li><a href="#">🌐 HTML</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <div class="footer-heading">CONTACT</div>
+        <ul class="footer-links">
+          <li><a href="tel:01757118796">📱 01757118796</a></li>
+          <li><a href="https://wa.me/8801757118796" target="_blank">💬 WhatsApp</a></li>
+          <li><a href="https://m.me/page" target="_blank">📱 Messenger</a></li>
+          <li><a href="https://facebook.com" target="_blank">📘 Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer bottom -->
+    <div class="footer-bottom">
+      <div>© 2024 <a href="#">HSC ICT Solution</a>. সর্বস্বত্ব সংরক্ষিত।</div>
+      <div>Made with ❤️ for HSC Students</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="script.js"></script>
+<script src="practice.js"></script>
+
+</body>
+</html>

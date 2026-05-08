@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>নিবন্ধন — ICT Practice Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── RESET & VARIABLES ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #04060f;
+    --panel:     #090d1f;
+    --cyan:      #00f5ff;
+    --purple:    #bf00ff;
+    --pink:      #ff0070;
+    --green:     #00ff88;
+    --text:      #cde4ff;
+    --muted:     #4a6080;
+    --error:     #ff3860;
+    --border:    rgba(0,245,255,0.18);
+    --glow-c:    0 0 18px rgba(0,245,255,0.45), 0 0 50px rgba(0,245,255,0.12);
+    --glow-p:    0 0 18px rgba(191,0,255,0.5);
+    --glow-err:  0 0 14px rgba(255,56,96,0.5);
+    --font-hud:  'Orbitron', monospace;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-bn:   'Hind Siliguri', sans-serif;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-bn);
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATED BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 20%, rgba(0,120,255,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 45% at 85% 80%, rgba(191,0,255,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* Scanline effect */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,245,255,0.012) 2px,
+      rgba(0,245,255,0.012) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* ── GRID LINES ── */
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.028) 1px, transparent 1px);
+    background-size: 55px 55px;
+    pointer-events: none;
+  }
+
+  /* ── CORNER DECORATIONS ── */
+  .corner {
+    position: fixed; width: 80px; height: 80px; z-index: 1; pointer-events: none;
+  }
+  .corner::before, .corner::after {
+    content: ''; position: absolute;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+  .corner::before { width: 2px; height: 40px; }
+  .corner::after  { width: 40px; height: 2px; }
+
+  .corner-tl { top: 16px; left: 16px; }
+  .corner-tl::before { top: 0; left: 0; }
+  .corner-tl::after  { top: 0; left: 0; }
+
+  .corner-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+  .corner-tr::before { top: 0; left: 0; }
+  .corner-tr::after  { top: 0; left: 0; }
+
+  .corner-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+  .corner-bl::before { top: 0; left: 0; }
+  .corner-bl::after  { top: 0; left: 0; }
+
+  .corner-br { bottom: 16px; right: 16px; transform: scale(-1); }
+  .corner-br::before { top: 0; left: 0; }
+  .corner-br::after  { top: 0; left: 0; }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  /* ── TOP HUD STRIP ── */
+  .hud-top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    height: 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(4,6,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .hud-brand {
+    font-family: var(--font-hud);
+    font-size: 11px; font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px rgba(0,245,255,0.5);
+    letter-spacing: 2px;
+  }
+  .hud-status {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hud-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulseDot 2s infinite;
+  }
+  @keyframes pulseDot {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  /* ── CARD ── */
+  .card {
+    width: 100%; max-width: 480px;
+    margin-top: 40px;
+    background: rgba(9,13,31,0.92);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0;
+    position: relative;
+    backdrop-filter: blur(16px);
+    animation: cardIn 0.6s cubic-bezier(0.4,0,0.2,1) both;
+    box-shadow:
+      0 0 0 1px rgba(0,245,255,0.05),
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(0,245,255,0.08);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Glowing top border */
+  .card::before {
+    content: '';
+    position: absolute; top: -1px; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), var(--cyan), transparent);
+    box-shadow: 0 0 16px var(--cyan);
+  }
+
+  /* ── CARD HEADER ── */
+  .card-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+    position: relative;
+  }
+
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--cyan);
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  .card-title {
+    font-family: var(--font-hud);
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 900;
+    line-height: 1.2;
+    background: linear-gradient(120deg, var(--cyan) 0%, #fff 40%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+
+  .card-sub {
+    font-family: var(--font-bn);
+    font-size: 12px; color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Corner accent on card header */
+  .card-header::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 60px; height: 60px;
+    border-top: 1px solid rgba(191,0,255,0.4);
+    border-right: 1px solid rgba(191,0,255,0.4);
+    border-radius: 0 4px 0 0;
+  }
+
+  /* ── FORM ── */
+  .card-body { padding: 24px 32px 28px; }
+
+  .field-group { margin-bottom: 20px; }
+
+  .field-label {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--cyan);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .field-label .req { color: var(--pink); font-size: 13px; line-height: 1; }
+
+  .field-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(0,245,255,0.2);
+    border-radius: 3px;
+    padding: 11px 14px;
+    font-family: var(--font-bn);
+    font-size: 14px; color: var(--text);
+    outline: none;
+    transition: all 0.25s ease;
+    caret-color: var(--cyan);
+  }
+
+  .field-input::placeholder { color: rgba(74,96,128,0.7); font-size: 13px; }
+
+  .field-input:focus {
+    border-color: var(--cyan);
+    box-shadow: var(--glow-c), inset 0 0 10px rgba(0,245,255,0.04);
+    background: rgba(0,20,40,0.5);
+  }
+
+  .field-input.error-state {
+    border-color: var(--error);
+    box-shadow: var(--glow-err);
+  }
+
+  textarea.field-input {
+    resize: vertical; min-height: 80px;
+    font-family: var(--font-bn);
+  }
+
+  /* Error message */
+  .field-error {
+    display: none;
+    margin-top: 5px;
+    font-family: var(--font-bn);
+    font-size: 12px; color: var(--error);
+    padding-left: 4px;
+    animation: errorSlide 0.2s ease;
+  }
+  .field-error.visible { display: flex; align-items: center; gap: 5px; }
+
+  @keyframes errorSlide {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SUBMIT BUTTON ── */
+  .btn-submit {
+    width: 100%; padding: 14px;
+    margin-top: 6px;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    border-radius: 3px;
+    font-family: var(--font-hud);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--cyan);
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(0,245,255,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-submit:hover::before { transform: translateX(100%); }
+
+  .btn-submit:hover {
+    box-shadow: var(--glow-c);
+    background: rgba(0,245,255,0.06);
+    color: #fff;
+  }
+
+  .btn-submit:active { transform: scale(0.98); }
+
+  .btn-submit:disabled {
+    opacity: 0.5; cursor: not-allowed; pointer-events: none;
+  }
+
+  /* Loading spinner inside button */
+  .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .spinner {
+    display: none;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,245,255,0.3);
+    border-top-color: var(--cyan);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SUCCESS STATE ── */
+  .success-overlay {
+    display: none;
+    position: absolute; inset: 0;
+    background: rgba(9,13,31,0.97);
+    border-radius: 4px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    animation: fadeIn 0.4s ease;
+    z-index: 10;
+  }
+  .success-overlay.visible { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+  .success-icon {
+    font-size: 48px;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0); } to { transform: scale(1); }
+  }
+
+  .success-title {
+    font-family: var(--font-hud);
+    font-size: 16px; font-weight: 700;
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green);
+    letter-spacing: 2px;
+  }
+
+  .success-msg {
+    font-family: var(--font-bn);
+    font-size: 13px; color: var(--muted);
+    text-align: center; padding: 0 30px;
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER INFO ── */
+  .card-footer {
+    padding: 14px 32px;
+    border-top: 1px solid rgba(0,245,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .footer-info {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .footer-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 8px;
+    border: 1px solid rgba(191,0,255,0.4);
+    border-radius: 2px;
+    color: var(--purple);
+    letter-spacing: 1px;
+  }
+
+  /* ── OFFLINE BADGE ── */
+  .offline-badge {
+    display: none;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    border: 1px solid rgba(255,170,0,0.4);
+    border-radius: 3px;
+    background: rgba(255,140,0,0.07);
+    font-family: var(--font-mono);
+    font-size: 11px; color: #ffaa00;
+    text-align: center; letter-spacing: 1px;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.25); border-radius: 3px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 520px) {
+    .card-body, .card-header { padding-left: 20px; padding-right: 20px; }
+    .card-footer { padding-left: 20px; padding-right: 20px; }
+    .corner { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="grid-bg"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<!-- HUD top strip -->
+<div class="hud-top">
+  <div class="hud-brand">ICT // PRACTICE</div>
+  <div class="hud-status">
+    <div class="hud-dot"></div>
+    <span id="netStatus">ONLINE</span>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="page-wrap">
+
+  <!-- Offline notice -->
+  <div class="offline-badge" id="offlineBadge">
+    ⚠ OFFLINE MODE — ডেটা স্থানীয়ভাবে সংরক্ষিত হবে
+  </div>
+
+  <!-- Registration Card -->
+  <div class="card" id="regCard">
+
+    <!-- Success overlay -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-icon">✅</div>
+      <div class="success-title">নিবন্ধন সম্পন্ন!</div>
+      <div class="success-msg">তোমার তথ্য সফলভাবে জমা হয়েছে।<br>Practice page এ নিয়ে যাওয়া হচ্ছে...</div>
+    </div>
+
+    <div class="card-header">
+      <div class="card-label">// REGISTRATION REQUIRED</div>
+      <div class="card-title">প্রবেশাধিকার<br>নিশ্চিত করো</div>
+      <div class="card-sub">ICT Practice Platform ব্যবহার করতে একবার নিবন্ধন করো।</div>
+    </div>
+
+    <div class="card-body">
+      <!-- Name -->
+      <div class="field-group">
+        <div class="field-label">
+          <span>নাম</span><span class="req">*</span>
+        </div>
+        <input
+          class="field-input" id="fieldName"
+          type="text" placeholder="তোমার পূর্ণ নাম লিখো (কমপক্ষে ৩ অক্ষর)"
+          autocomplete="name"
+        >
+        <div class="field-error" id="errName">⛔ নাম কমপক্ষে ৩ অক্ষরের হতে হবে।</div>
+      </div>
+
+      <!-- College -->
+      <div class="field-group">
+        <div class="field-label">
+          <span>কলেজের নাম</span><span class="req">*</span>
+        </div>
+        <input
+          class="field-input" id="fieldCollege"
+          type="text" placeholder="তোমার কলেজ/স্কুলের নাম"
+          autocomplete="organization"
+        >
+        <div class="field-error" id="errCollege">⛔ কলেজের নাম অবশ্যই দিতে হবে।</div>
+      </div>
+
+      <!-- Mobile -->
+      <div class="field-group">
+        <div class="field-label">
+          <span>মোবাইল নম্বর</span><span class="req">*</span>
+        </div>
+        <input
+          class="field-input" id="fieldMobile"
+          type="tel" placeholder="01XXXXXXXXX (BD ফরম্যাট)"
+          maxlength="11" autocomplete="tel"
+        >
+        <div class="field-error" id="errMobile">⛔ সঠিক বাংলাদেশি নম্বর দাও (01X-XXXXXXXX)।</div>
+      </div>
+
+      <!-- Comment (Optional) -->
+      <div class="field-group">
+        <div class="field-label">মন্তব্য <span style="color:var(--muted); font-size:9px; letter-spacing:1px;">(ঐচ্ছিক)</span></div>
+        <textarea
+          class="field-input" id="fieldComment"
+          placeholder="কোনো মন্তব্য বা প্রশ্ন থাকলে লিখতে পারো..."
+        ></textarea>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-submit" id="btnSubmit" onclick="handleSubmit()">
+        <div class="btn-inner">
+          <div class="spinner" id="btnSpinner"></div>
+          <span id="btnText">নিবন্ধন করো ▶</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="card-footer">
+      <div class="footer-info">HSC ICT 2025</div>
+      <div class="footer-badge">CYBERPUNK v1.0</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG — তোমার Google Apps Script URL এখানে দাও
+// ══════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxse_yhnPzo_6BXSd_U57tNclkjqPuP7PuFr9pftcBd6axvxKGnVo8kViUWLpEzLA1x/exec';
+
+// ══════════════════════════════════════════
+//  AUTO-REDIRECT: ইতিমধ্যে রেজিস্টার্ড হলে
+// ══════════════════════════════════════════
+if (localStorage.getItem('hsc_ict_verified') === 'true') {
+  window.location.replace('practice.html');
+}
+
+// ══════════════════════════════════════════
+//  OFFLINE / LOCAL FILE DETECTION
+// ══════════════════════════════════════════
+const isOffline = !navigator.onLine;
+const isLocalFile = window.location.protocol === 'file:';
+const isOfflineMode = isOffline || isLocalFile;
+
+if (isOfflineMode) {
+  document.getElementById('offlineBadge').style.display = 'block';
+  document.getElementById('netStatus').textContent = isLocalFile ? 'LOCAL FILE' : 'OFFLINE';
+  document.getElementById('netStatus').style.color = '#ffaa00';
+}
+
+window.addEventListener('offline', () => {
+  document.getElementById('netStatus').textContent = 'OFFLINE';
+  document.getElementById('netStatus').style.color = '#ffaa00';
+  document.getElementById('offlineBadge').style.display = 'block';
+});
+window.addEventListener('online', () => {
+  document.getElementById('netStatus').textContent = 'ONLINE';
+  document.getElementById('netStatus').style.color = '';
+  document.getElementById('offlineBadge').style.display = 'none';
+});
+
+// ══════════════════════════════════════════
+//  VALIDATION HELPERS
+// ══════════════════════════════════════════
+function setError(inputId, errId, show) {
+  const input = document.getElementById(inputId);
+  const err   = document.getElementById(errId);
+  if (show) {
+    input.classList.add('error-state');
+    err.classList.add('visible');
+  } else {
+    input.classList.remove('error-state');
+    err.classList.remove('visible');
+  }
+  return !show; // returns true if valid
+}
+
+// Clear error on input focus/change
+['fieldName','fieldCollege','fieldMobile','fieldComment'].forEach(id => {
+  const el = document.getElementById(id);
+  const errMap = {
+    fieldName: 'errName',
+    fieldCollege: 'errCollege',
+    fieldMobile: 'errMobile'
+  };
+  el.addEventListener('input', () => {
+    if (errMap[id]) setError(id, errMap[id], false);
+  });
+});
+
+function validate() {
+  const name    = document.getElementById('fieldName').value.trim();
+  const college = document.getElementById('fieldCollege').value.trim();
+  const mobile  = document.getElementById('fieldMobile').value.trim();
+
+  const nameOk    = setError('fieldName',   'errName',    name.length < 3);
+  const collegeOk = setError('fieldCollege','errCollege', college.length === 0);
+  // BD mobile: starts with 01, followed by 3-9, then 8 digits = 11 total
+  const bdPattern = /^01[3-9]\d{8}$/;
+  const mobileOk  = setError('fieldMobile', 'errMobile',  !bdPattern.test(mobile));
+
+  return nameOk && collegeOk && mobileOk;
+}
+
+// ══════════════════════════════════════════
+//  SUBMIT HANDLER
+// ══════════════════════════════════════════
+async function handleSubmit() {
+  if (!validate()) return;
+
+  const name    = document.getElementById('fieldName').value.trim();
+  const college = document.getElementById('fieldCollege').value.trim();
+  const mobile  = document.getElementById('fieldMobile').value.trim();
+  const comment = document.getElementById('fieldComment').value.trim();
+
+  // ── OFFLINE / LOCAL FILE: skip network, go directly ──
+  if (!navigator.onLine || window.location.protocol === 'file:') {
+    localStorage.setItem('hsc_ict_verified', 'true');
+    showSuccess();
+    return;
+  }
+
+  // ── ONLINE: submit to Google Sheets ──
+  setLoading(true);
+
+  const payload = { name, college, mobile, comment,
+                    timestamp: new Date().toISOString() };
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',           // Google Apps Script requires no-cors
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    console.log('Fetch response status:', response.status);
+    console.log('Payload sent:', payload);
+    
+    // no-cors → response is opaque, assume success
+    localStorage.setItem('hsc_ict_verified', 'true');
+    showSuccess();
+  } catch (err) {
+    // Network error → fall back to offline mode
+    console.warn('Network error, using offline fallback:', err);
+    console.error('Payload was:', payload);
+    localStorage.setItem('hsc_ict_verified', 'true');
+    showSuccess();
+  } finally {
+    setLoading(false);
+  }
+}
+
+function setLoading(on) {
+  document.getElementById('btnSubmit').disabled = on;
+  document.getElementById('btnSpinner').style.display = on ? 'block' : 'none';
+  document.getElementById('btnText').textContent = on ? 'জমা হচ্ছে...' : 'নিবন্ধন করো ▶';
+}
+
+function showSuccess() {
+  document.getElementById('successOverlay').classList.add('visible');
+  setTimeout(() => window.location.replace('practice.html'), 2200);
+}
+</script>
+</body>
+</html>
